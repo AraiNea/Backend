@@ -18,4 +18,11 @@ public class RecommendedProduct {
     private String recommendedImg;
     private String recProductPath;
     private Integer priority;
+
+    @Transient
+    public String getRecommendImgPath(){
+        if (recommendedImg == null) return null;
+
+        return "/Images/recommended-photos/"+ recommendedImg;
+    }
 }

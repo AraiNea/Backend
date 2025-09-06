@@ -35,6 +35,6 @@ public class Product {
     public String getProductImgPath(){
         if (productImg == null) return null;
 
-        return "/product-photos/"+ productImg;
+        return "/Images/product-photos/"+ productImg;
     }
 }
