@@ -30,4 +30,11 @@ public class Product {
     private String createdBy;
     private LocalDate updatedAt;
     private String updatedBy;
+
+    @Transient
+    public String getProductImgPath(){
+        if (productImg == null) return null;
+
+        return "/product-photos/"+ productImg;
+    }
 }

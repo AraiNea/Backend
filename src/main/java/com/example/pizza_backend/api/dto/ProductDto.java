@@ -22,7 +22,7 @@ public class ProductDto {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     private Integer productStock;
 
-    private String productImg;
+    private String productImgPath;
     private Integer isActive;
     private LocalDate createdAt;
     private String createdBy;

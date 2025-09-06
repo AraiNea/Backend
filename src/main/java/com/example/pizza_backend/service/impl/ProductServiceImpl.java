@@ -38,6 +38,7 @@ public class ProductServiceImpl implements ProductService {
                         .productName(p.getProductName())
                         .productDetail(p.getProductDetail())
                         .productPrice(p.getProductPrice())
+                        .productImgPath(p.getProductImgPath())
                         .build())
                 .toList();
     }
