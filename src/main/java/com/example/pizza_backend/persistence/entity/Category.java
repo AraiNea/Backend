@@ -1,0 +1,17 @@
+package com.example.pizza_backend.persistence.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Entity
+public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long categoryId;
+    private String categoryName;
+    private String categoryImg;
+    private String categoryProductPath;
+    private Long categoryPriority;
+}

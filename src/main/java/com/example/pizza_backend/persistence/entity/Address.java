@@ -1,0 +1,25 @@
+package com.example.pizza_backend.persistence.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@Entity
+public class Address {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long addr_id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
+
+    private String phone;
+    private String province;
+    private String amphor;
+    private String district;
+    private String zipCode;
+    private String addrNum;
+    private String detail;
+    private String receivedName;
+}
