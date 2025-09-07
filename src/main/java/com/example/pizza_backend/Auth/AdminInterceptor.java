@@ -1,0 +1,64 @@
+package com.example.pizza_backend.Auth;
+
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import io.micrometer.common.lang.NonNull;
+import jakarta.servlet.http.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+
+@Component
+public class AdminInterceptor implements HandlerInterceptor {
+    @Value("${app.jwt.secret}")
+    private String jwtSecret;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
+        try {
+            // 1. หา cookie ชื่อ tokenpizza
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No cookies found");
+                return false;
+            }
+
+            String token = null;
+            for (Cookie cookie : cookies) {
+                if ("tokenpizza".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+
+            if (token == null) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No token found");
+                return false;
+            }
+
+            // 2. ถอด JWT ด้วย secret
+            Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+
+            // 3. ตรวจ role ว่าเป็น admin (user_role == 2)
+            Integer role = claims.getBody().get("user_role", Integer.class);
+            if (role != null && role == 2) {
+                return true; // ✅ ผ่าน
+            }
+
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not admin");
+            return false;
+
+        } catch (JwtException e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+            return false;
+        }
+    }
+}

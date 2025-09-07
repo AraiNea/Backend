@@ -8,6 +8,7 @@ import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.CategoryService;
 import com.example.pizza_backend.service.ProductService;
 import com.example.pizza_backend.service.RecommendedProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +31,7 @@ public class HomeController {
     private RecommendedProductService  recommendedProductService;
 
     @Autowired
-    public void setProductService(ProductService productService, CategoryService categoryService,  RecommendedProductService recommendedProductService) {
+    public void setProductService(ProductService productService,  CategoryService categoryService, RecommendedProductService recommendedProductService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.recommendedProductService = recommendedProductService;

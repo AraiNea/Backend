@@ -1,9 +1,9 @@
 package com.example.pizza_backend.api.controller;
 
+
 import com.example.pizza_backend.api.dto.ProductDto;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
-public class ProductController {
+@RequestMapping("/cart")
+public class CartController {
 
     private final ProductService productService;
     @Autowired
-    public ProductController(ProductService productService) {
+    public CartController(ProductService productService) {
         this.productService = productService;
     }
 

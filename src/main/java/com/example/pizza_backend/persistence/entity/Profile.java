@@ -13,7 +13,7 @@ public class Profile {
     private Long profileId;
     private String profileName;
     private String profileSname;
-    private Integer profileType;
+    private Integer profileRole;
 
     // อาจ null (ใช้เมื่อ type = 1)
     @ManyToOne(fetch = FetchType.LAZY)
