@@ -26,6 +26,9 @@ public class CategoryServiceImpl implements CategoryService {
                 .map((c-> CategoryDto.builder()
                         .categoryId(c.getCategoryId())
                         .categoryName(c.getCategoryName())
+                        .categoryImg(c.getCategoryImg())
+                        .categoryProductPath(c.getCategoryProductPath())
+                        .categoryPriority(c.getCategoryPriority())
                         .build()))
                 .toList();
     }

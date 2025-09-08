@@ -16,4 +16,5 @@ public class CategoryDto {
     private String categoryName;
     private String categoryImg;
     private String categoryProductPath;
+    private Long categoryPriority;
 }

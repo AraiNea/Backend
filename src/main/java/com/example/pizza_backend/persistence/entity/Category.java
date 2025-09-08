@@ -14,4 +14,11 @@ public class Category {
     private String categoryImg;
     private String categoryProductPath;
     private Long categoryPriority;
+
+    @Transient
+    public String getCategoryImgPath(){
+        if (categoryImg == null) return null;
+
+        return "/Images/category-photos/"+ categoryImg;
+    }
 }

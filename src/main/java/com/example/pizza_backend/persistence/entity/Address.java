@@ -8,10 +8,9 @@ import lombok.*;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long addr_id;
+    private Long addressId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
+    @OneToOne(mappedBy = "address")
     private Profile profile;
 
     private String phone;

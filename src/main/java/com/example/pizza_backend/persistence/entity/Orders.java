@@ -17,7 +17,7 @@ public class Orders {
     private Profile profile;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "addr_id")
+    @JoinColumn(name = "address_id")  // FK -> address.address_id
     private Address address;
 
     private Integer status;

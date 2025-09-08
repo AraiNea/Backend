@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getAllProducts(ProductSearchReq req){
-        List<Product> products = productRepository.findAll(
+        List<Product> products = productRepository.searchProducts(
                 req.getProductId(),
                 req.getProductName(),
                 req.getProductStock(),

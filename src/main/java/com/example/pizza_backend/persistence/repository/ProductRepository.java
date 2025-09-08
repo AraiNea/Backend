@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "AND (:isActive IS NULL OR p.isActive = :isActive)" +
             "AND (:categoryId IS NULL OR p.category.categoryId = :categoryId)" +
             "order by p.productId")
-    List<Product> findAll(
+    List<Product> searchProducts(
             @Param("productId") Long  productId,
             @Param("productName") String productName,
             @Param("productPrice") String productPrice,
@@ -28,6 +28,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("categoryId" ) Long categoryId,
             @Param("isActive") String isActive
     );
+
 
 
 }

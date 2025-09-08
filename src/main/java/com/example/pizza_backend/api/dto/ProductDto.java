@@ -18,10 +18,7 @@ public class ProductDto {
     private String productName;
     private String productDetail;
     private Integer productPrice;
-
-    @JsonInclude(JsonInclude.Include.ALWAYS)
     private Integer productStock;
-
     private String productImgPath;
     private Integer isActive;
     private LocalDate createdAt;
