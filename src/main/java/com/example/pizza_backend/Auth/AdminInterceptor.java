@@ -48,7 +48,7 @@ public class AdminInterceptor implements HandlerInterceptor {
                     .parseClaimsJws(token);
 
             // 3. ตรวจ role ว่าเป็น admin (user_role == 2)
-            Integer role = claims.getBody().get("user_role", Integer.class);
+            Integer role = claims.getBody().get("profile_role", Integer.class);
             if (role != null && role == 2) {
                 return true; // ✅ ผ่าน
             }

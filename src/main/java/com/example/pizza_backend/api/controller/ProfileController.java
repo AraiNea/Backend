@@ -40,8 +40,8 @@ public class ProfileController {
         //เตรียม payload
         Map<String, Object> payload = Map.of(
                 "profile_id", user.getProfileId(),
-                "user_name", user.getProfileName(),
-                "user_role", user.getProfileRole()
+                "username", user.getProfileName(),
+                "profile_role", user.getProfileRole()
         );
         //สร้าง token
         String token = jwtService.generateToken(payload);
@@ -58,7 +58,6 @@ public class ProfileController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(Map.of("message", "success"));
     }
-
 
     @PostMapping("/user/signup")
     public ResponseEntity<?> userSignUp(@RequestBody ProfileInputReq req) {
@@ -106,6 +105,4 @@ public class ProfileController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(Map.of("message", "log out success"));
     }
-
-
 }

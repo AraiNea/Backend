@@ -4,8 +4,10 @@ import com.example.pizza_backend.api.dto.input.LoginInputReq;
 import com.example.pizza_backend.api.dto.input.ProfileInputReq;
 import com.example.pizza_backend.api.mapper.ProfileMapper;
 import com.example.pizza_backend.persistence.entity.Address;
+import com.example.pizza_backend.persistence.entity.Cart;
 import com.example.pizza_backend.persistence.entity.Profile;
 import com.example.pizza_backend.persistence.repository.AddressRepository;
+import com.example.pizza_backend.persistence.repository.CartRepository;
 import com.example.pizza_backend.persistence.repository.ProfileRepository;
 import com.example.pizza_backend.service.JwtService;
 import com.example.pizza_backend.service.ProfileService;
@@ -20,17 +22,24 @@ import java.util.Optional;
 @Service
 public class ProfileServiceImpl implements ProfileService {
 
-    private final ProfileRepository profileRepository;
     private final JwtService jwtService;
     private final ProfileMapper profileMapper;
+    private final ProfileRepository profileRepository;
     private final AddressRepository addressRepository;
+    private final CartRepository cartRepository;
 
     @Autowired
-    public ProfileServiceImpl(ProfileRepository profileRepository, JwtService jwtService, ProfileMapper profileMapper, AddressRepository addressRepository) {
+    public ProfileServiceImpl(
+            ProfileRepository profileRepository,
+            JwtService jwtService,
+            ProfileMapper profileMapper,
+            AddressRepository addressRepository,
+            CartRepository cartRepository) {
         this.profileRepository = profileRepository;
         this.jwtService = jwtService;
         this.profileMapper = profileMapper;
         this.addressRepository = addressRepository;
+        this.cartRepository = cartRepository;
     }
 
 
@@ -52,40 +61,26 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public String createProfileWithAddress(ProfileInputReq req, Integer role) {
-        // 2. สร้างและบันทึก user ใหม่
-//        Profile user = Profile.builder()
-//                .username(req.getUsername())
-//                .password(req.getPassword())
-//                .profileName(req.getProfileName())
-//                .profileSname(req.getProfileSname())
-//                .createdAt(LocalDate.now())
-//                .profileRole(role)
-//                .build();
-//
-//
-//        Address address = new Address();
-//        address.setPhone(req.getPhone());
-//        address.setAmphor(req.getAmphor());
-//        address.setDistrict(req.getDistrict());
-//        address.setProvince(req.getProvince());
-//        address.setZipCode(req.getZipCode());
-//        address.setAddrNum(req.getAddrNum());
-//        address.setDetail(req.getDetail());
-//        address.setReceivedName(req.getReceivedName());
         Profile user = profileMapper.toProfile(req, role);
         Address address = profileMapper.toAddress(req);
 
-        user.setAddress(address);
-        address.setProfile(user);
-
+        //role=2=admin admin ไม่มี cart และ address
+        if (role == 1) {
+            user.setAddress(address);
+            address.setProfile(user);
+            Cart cart = new Cart();
+            cart.setProfile(user);
+            cart.setCreatedAt(LocalDate.now());
+            cartRepository.save(cart);
+            addressRepository.save(address);
+        }
         profileRepository.save(user);
-        addressRepository.save(address);
 
         //สร้าง JWT แล้วส่ง token กลับไป
         String token = jwtService.generateToken(Map.of(
-                "user_id", user.getProfileId(),
-                "user_name", user.getProfileName(),
-                "user_role", user.getProfileRole()
+                "profile_id", user.getProfileId(),
+                "username", user.getProfileName(),
+                "profile_role", user.getProfileRole()
         ));
         return token;
     }

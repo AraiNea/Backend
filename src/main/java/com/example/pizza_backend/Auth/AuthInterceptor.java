@@ -51,8 +51,12 @@ public class AuthInterceptor implements HandlerInterceptor {
                     .parseClaimsJws(token); // ถ้าผิดจะโยน exception ออกมา
 
             // 4. ถ้าอยากดึงค่า user จาก token:
-            Long userId = claims.getBody().get("user_id", Long.class);
-            // (คุณสามารถเก็บ username ไว้ใน request ก็ได้)
+            Long profileId = claims.getBody().get("profile_id", Long.class);
+            String profileName = claims.getBody().get("profile_name", String.class);
+            Long profileRole = claims.getBody().get("profile_role", Long.class);
+            request.setAttribute("profile_id", profileId);
+            request.setAttribute("profile_name", profileName);
+            request.setAttribute("profile_role", profileRole);
 
             // 5. ✅ ผ่านการตรวจสอบแล้ว → ปล่อยผ่าน
             return true;

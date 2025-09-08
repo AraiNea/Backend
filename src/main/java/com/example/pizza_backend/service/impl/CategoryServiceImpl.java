@@ -21,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> getAllCategories() {
-        List<Category>  categories = categoryRepository.findAllCategory();
+        List<Category>  categories = categoryRepository.findAllByOrderByCategoryPriorityAsc();
         return categories.stream()
                 .map((c-> CategoryDto.builder()
                         .categoryId(c.getCategoryId())
