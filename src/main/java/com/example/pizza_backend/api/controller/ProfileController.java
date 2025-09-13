@@ -1,8 +1,8 @@
 package com.example.pizza_backend.api.controller;
 
 
-import com.example.pizza_backend.api.dto.input.LoginInputReq;
-import com.example.pizza_backend.api.dto.input.ProfileInputReq;
+import com.example.pizza_backend.api.dto.input.LoginInput;
+import com.example.pizza_backend.api.dto.input.ProfileInput;
 import com.example.pizza_backend.persistence.entity.Profile;
 import com.example.pizza_backend.service.JwtService;
 import com.example.pizza_backend.service.ProfileService;
@@ -29,7 +29,7 @@ public class ProfileController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> signIn(@RequestBody LoginInputReq req) {
+    public ResponseEntity<?> signIn(@RequestBody LoginInput req) {
 
         Optional<Profile> userOpt = profileService.checkLogIn(req);
         if (userOpt.isEmpty()) {
@@ -60,7 +60,7 @@ public class ProfileController {
     }
 
     @PostMapping("/user/signup")
-    public ResponseEntity<?> userSignUp(@RequestBody ProfileInputReq req) {
+    public ResponseEntity<?> userSignUp(@RequestBody ProfileInput req) {
         String tokenUserSighUp = profileService.createProfileWithAddress(req,1);
         ResponseCookie cookie = ResponseCookie.from("tokenpizza", tokenUserSighUp)
                 .httpOnly(true)
@@ -76,7 +76,7 @@ public class ProfileController {
     }
 
     @PostMapping("/admin/signup")
-    public ResponseEntity<?> adminSighIn(@RequestBody ProfileInputReq req) {
+    public ResponseEntity<?> adminSighIn(@RequestBody ProfileInput req) {
         String tokenUserSighUp = profileService.createProfileWithAddress(req,2);
         ResponseCookie cookie = ResponseCookie.from("tokenpizza", tokenUserSighUp)
                 .httpOnly(true)

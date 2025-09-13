@@ -2,6 +2,7 @@ package com.example.pizza_backend.service.impl;
 
 import com.example.pizza_backend.api.dto.CartItemDto;
 import com.example.pizza_backend.api.dto.input.CartItemInput;
+import com.example.pizza_backend.api.mapper.Mapper;
 import com.example.pizza_backend.persistence.entity.Cart;
 import com.example.pizza_backend.persistence.entity.CartItem;
 import com.example.pizza_backend.persistence.entity.Product;
@@ -20,14 +21,17 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final Mapper mapper;
 
     @Autowired
     public CartItemServiceImpl(CartItemRepository cartItemRepository,
                                CartRepository cartRepository,
-                               ProductRepository productRepository) {
+                               ProductRepository productRepository,
+                               Mapper mapper) {
         this.cartItemRepository = cartItemRepository;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -53,11 +57,9 @@ public class CartItemServiceImpl implements CartItemService {
             return "not found product";
         }
 
-        CartItem cartItem = new CartItem();
+        CartItem cartItem = mapper.toCartItem(cartItemInput);
         cartItem.setCart(cart);
         cartItem.setProduct(product.get());
-        cartItem.setQty(cartItemInput.getQty());
-        cartItem.setLineTotal(cartItemInput.getLineTotal());
 
         cartItemRepository.save(cartItem);
         return "create items successfully";

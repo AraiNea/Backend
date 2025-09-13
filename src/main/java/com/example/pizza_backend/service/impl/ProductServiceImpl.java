@@ -2,12 +2,15 @@ package com.example.pizza_backend.service.impl;
 
 
 import com.example.pizza_backend.api.dto.ProductDto;
+import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.persistence.entity.Product;
 import com.example.pizza_backend.persistence.repository.ProductRepository;
 import com.example.pizza_backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,6 +45,17 @@ public class ProductServiceImpl implements ProductService {
                         .productImgPath(p.getProductImgPath())
                         .build())
                 .toList();
+    }
+
+    @Override
+    public String createProduct(ProductInput productInput, MultipartFile imageFile) {
+        Product product = new Product();
+        String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+        product.setProductImg(fileName);
+
+
+
+        return "";
     }
 
 
