@@ -22,8 +22,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         try {
             // 1. ดึง cookie ทั้งหมด
+            System.out.println("AuthInterceptor preHandle");
             Cookie[] cookies = request.getCookies();
-            if (cookies == null) {
+            if (cookies == null || cookies.length == 0) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: No cookies found");
                 return false;
             }

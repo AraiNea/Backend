@@ -4,6 +4,7 @@ import com.example.pizza_backend.Auth.AdminInterceptor;
 import com.example.pizza_backend.Auth.AuthInterceptor;
 import io.micrometer.common.lang.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,11 +12,16 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@RequiredArgsConstructor
 public class WebConfig {
 
     private final AuthInterceptor authInterceptor;
     private final AdminInterceptor adminInterceptor;
+
+    @Autowired
+    public WebConfig(@NonNull AuthInterceptor authInterceptor, @NonNull AdminInterceptor adminInterceptor) {
+        this.authInterceptor = authInterceptor;
+        this.adminInterceptor = adminInterceptor;
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {

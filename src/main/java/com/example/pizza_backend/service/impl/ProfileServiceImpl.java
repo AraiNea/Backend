@@ -73,6 +73,8 @@ public class ProfileServiceImpl implements ProfileService {
             cartRepository.save(cart);
             addressRepository.save(address);
         }
+        user.setCreatedAt(LocalDate.now());
+        user.setProfileRole(role);
         profileRepository.save(user);
 
         //สร้าง JWT แล้วส่ง token กลับไป

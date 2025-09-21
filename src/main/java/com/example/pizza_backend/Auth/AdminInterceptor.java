@@ -22,7 +22,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         try {
             // 1. หา cookie ชื่อ tokenpizza
             Cookie[] cookies = request.getCookies();
-            if (cookies == null) {
+            if (cookies == null || cookies.length == 0) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No cookies found");
                 return false;
             }
