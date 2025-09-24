@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +28,11 @@ public class ProductController {
 
 
     @GetMapping("/list")
-    public ResponseEntity<List<ProductDto>> getAllProducts(@ModelAttribute ProductSearchReq productSearchReq) {
+    public ResponseEntity<Map<String, Object>> getAllProducts(@ModelAttribute ProductSearchReq productSearchReq) {
         List<ProductDto> products = productService.getAllProducts(productSearchReq);
-        return ResponseEntity.ok(products);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("products", products);
+        return ResponseEntity.ok(response);
     }
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestPart("product") ProductInput productInput,
