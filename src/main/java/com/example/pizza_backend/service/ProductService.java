@@ -12,4 +12,5 @@ public interface ProductService {
 
     List<ProductDto> getAllProducts(ProductSearchReq productSearchReq);
     String createProduct(ProductInput productInput, MultipartFile imageFile) throws IOException;
+    String updateProduct(ProductInput productInput, MultipartFile imageFile) throws IOException;
 }

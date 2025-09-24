@@ -77,5 +77,23 @@ public class ProductServiceImpl implements ProductService {
         return "success";
     }
 
+    @Override
+    public String updateProduct(ProductInput productInput, MultipartFile imageFile) throws IOException {
+        String name = "jj";
+        Optional<Category> category = categoryRepository.findById(productInput.getCategoryId());
+        if (category.isEmpty()){
+            return "not found category";
+        }
+        Product product = mapper.toProduct(productInput, name);
+        String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+        product.setProductImg(fileName);
+        product.setCategory(category.get());
+        productRepository.save(product);
+
+        FileUploadUtil.saveFile("Images/product-photos/",imageFile,fileName);
+
+        return "success";
+    }
+
 
 }
