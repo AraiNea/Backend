@@ -10,6 +10,6 @@ public class ProductInput {
     private String productDetail;
     private Integer productPrice;
     private Integer productStock;
-    private String productImgPath; //ex. cola.png
     private Integer isActive;
+    private Long categoryId;
 }

@@ -4,6 +4,7 @@ import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.input.ProfileInput;
 import com.example.pizza_backend.persistence.entity.Address;
 import com.example.pizza_backend.persistence.entity.CartItem;
+import com.example.pizza_backend.persistence.entity.Product;
 import com.example.pizza_backend.persistence.entity.Profile;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -19,11 +20,20 @@ public interface Mapper {
     @Mapping(target = "address", ignore = true)
     Profile toProfile(ProfileInput req, @Context Integer role);
 
+
     Address toAddress(ProfileInput req);
+
 
     @Mapping(target = "cart", ignore = true)
     @Mapping(target = "product", ignore = true)
     CartItem toCartItem(CartItemInput cartItemInput);
+
+
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "productImg", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "createdBy", expression = "java(name)")
+    Product toProduct(ProductInput productInput, @Context String name);
 
     // กรณี map กลับก็ทำได้
     // ProfileInputReq toDto(Profile profile);

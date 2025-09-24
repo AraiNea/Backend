@@ -7,6 +7,8 @@ import com.example.pizza_backend.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
@@ -17,7 +19,8 @@ public class CartServiceImpl implements CartService {
     }
     @Override
     public CartDto getCartDtoByProfileId(Long profileId) {
-        Cart cart = cartRepository.findByProfileProfileId(profileId);
+        Cart cart = cartRepository.findByProfileProfileId(profileId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
         return CartDto.builder()
                 .cartId(cart.getCartId())
                 .username(cart.getProfile().getUsername())

@@ -1,12 +1,11 @@
 package com.example.pizza_backend.api.controller;
 
 
-import com.example.pizza_backend.api.dto.input.LoginInputReq;
-import com.example.pizza_backend.api.dto.input.ProfileInputReq;
+import com.example.pizza_backend.api.dto.input.LoginInput;
+import com.example.pizza_backend.api.dto.input.ProfileInput;
 import com.example.pizza_backend.persistence.entity.Profile;
 import com.example.pizza_backend.persistence.repository.ProfileRepository;
 import com.example.pizza_backend.service.JwtService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -33,7 +32,7 @@ public class LoginController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signIn(@RequestBody LoginInputReq req) {
+    public ResponseEntity<?> signIn(@RequestBody LoginInput req) {
         Optional<Profile> userOpt = profileRepository
                 .findFirstByUsernameAndPassword(req.getUsername(), req.getPassword());
 
@@ -68,7 +67,7 @@ public class LoginController {
     }
 
     @PostMapping("/user/signup")
-    public ResponseEntity<?> signUp(@RequestBody ProfileInputReq req) {
+    public ResponseEntity<?> signUp(@RequestBody ProfileInput req) {
         // 1. ตรวจสอบว่า username ซ้ำไหม
         if (profileRepository.existsByUsername(req.getUsername())) {
             return ResponseEntity.status(409).body(Map.of("message", "username already taken"));

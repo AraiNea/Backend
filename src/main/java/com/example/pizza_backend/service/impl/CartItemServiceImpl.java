@@ -51,14 +51,17 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public String createCartItem(CartItemInput cartItemInput, Long profileId) {
-        Cart cart = cartRepository.findByProfileProfileId(profileId);
+        Optional<Cart> cart = cartRepository.findByProfileProfileId(profileId);
+        if (cart.isEmpty()){
+            return "not found cart";
+        }
         Optional<Product> product = productRepository.findById(cartItemInput.getProductId());
         if (product.isEmpty()){
             return "not found product";
         }
 
         CartItem cartItem = mapper.toCartItem(cartItemInput);
-        cartItem.setCart(cart);
+        cartItem.setCart(cart.get());
         cartItem.setProduct(product.get());
 
         cartItemRepository.save(cartItem);
