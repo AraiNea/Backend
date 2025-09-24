@@ -8,12 +8,12 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests && ls -l /app/target
 
-#Stage 2: Run JAR
+# Stage 2: Run JAR
 FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
-#👇 ระบุชื่อไฟล์ตรง ๆ
-COPY --from=builder /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
+# คัดลอก jar ที่ build ได้มา ไม่ต้อง fix ชื่อ
+COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
