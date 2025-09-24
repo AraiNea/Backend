@@ -15,4 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag pattaratos/arainea-backend:latest
+    - name: login
+      run: docker login -u pattaratos -p dckr_pat_sJjyI445b42CCn2vjtYA9dMs5Po
+    - name: push docker
+      run: docker push pattaratos/arainea-backend:latest
