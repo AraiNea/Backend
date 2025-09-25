@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class ProductInput {
+    private Long productId;
     private String productName;
     private String productDetail;
     private Integer productPrice;

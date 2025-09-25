@@ -33,7 +33,9 @@ public class WebConfig {
                         .addPathPatterns("/cart/**")         // ตรวจเฉพาะ path นี้
                         .excludePathPatterns("/login/**");    // ยกเว้น path นี้
                 registry.addInterceptor(adminInterceptor)
-                        .addPathPatterns("/admin/**");
+                        .addPathPatterns("/admin/**"
+//                                ,"/product/create","product/update","product/delete"
+                        );
             }
 
             // ✅ CORS สำหรับอนุญาต cross-origin (เช่น React ที่ 5173)

@@ -15,6 +15,8 @@ public interface Mapper {
     Mapper INSTANCE = Mappers.getMapper(Mapper.class);
 
     // Mapping จาก DTO → Entity
+
+    // CREATE
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "profileRole", expression = "java(role)")
     @Mapping(target = "address", ignore = true)
@@ -34,6 +36,17 @@ public interface Mapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "createdBy", expression = "java(name)")
     Product toProduct(ProductInput productInput, @Context String name);
+
+
+    //UPDATE
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "category", ignore = true)     // handle manually
+    @Mapping(target = "productImg", ignore = true)   // handle manually
+    @Mapping(target = "productId", ignore = true)   // for update
+    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "updatedBy", expression = "java(name)")
+    void updateProductFromInput(ProductInput productInput, @MappingTarget Product product, @Context String name);
+
 
     // กรณี map กลับก็ทำได้
     // ProfileInputReq toDto(Profile profile);

@@ -12,6 +12,7 @@ import com.example.pizza_backend.persistence.repository.ProductRepository;
 import com.example.pizza_backend.service.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
+    @Transactional
     public String createCartItem(CartItemInput cartItemInput, Long profileId) {
         Optional<Cart> cart = cartRepository.findByProfileProfileId(profileId);
         if (cart.isEmpty()){

@@ -6,13 +6,16 @@ import com.example.pizza_backend.api.dto.ProductDto;
 import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.api.mapper.Mapper;
+import com.example.pizza_backend.persistence.entity.Cart;
 import com.example.pizza_backend.persistence.entity.Category;
 import com.example.pizza_backend.persistence.entity.Product;
 import com.example.pizza_backend.persistence.repository.CategoryRepository;
 import com.example.pizza_backend.persistence.repository.ProductRepository;
 import com.example.pizza_backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,13 +63,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String createProduct(ProductInput productInput, MultipartFile imageFile) throws IOException {
-        String name = "jj";
+    @Transactional
+    public String createProduct(ProductInput productInput, MultipartFile imageFile, String username) throws IOException {
         Optional<Category> category = categoryRepository.findById(productInput.getCategoryId());
         if (category.isEmpty()){
             return "not found category";
         }
-        Product product = mapper.toProduct(productInput, name);
+        Product product = mapper.toProduct(productInput, username);
         String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
         product.setProductImg(fileName);
         product.setCategory(category.get());
@@ -78,19 +81,34 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String updateProduct(ProductInput productInput, MultipartFile imageFile) throws IOException {
-        String name = "jj";
-        Optional<Category> category = categoryRepository.findById(productInput.getCategoryId());
-        if (category.isEmpty()){
-            return "not found category";
+    @Transactional
+    public String updateProduct(ProductInput productInput, MultipartFile imageFile, String username) throws IOException {
+        Long productId = productInput.getProductId();
+        Optional<Product> product_old = productRepository.findById(productId);
+        if (product_old.isEmpty()){
+            return "not found old product";
         }
-        Product product = mapper.toProduct(productInput, name);
-        String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-        product.setProductImg(fileName);
-        product.setCategory(category.get());
+        Product product = product_old.get();
+
+        mapper.updateProductFromInput(productInput, product, username);
+
+        if (productInput.getCategoryId() != null){
+            Optional<Category> category = categoryRepository.findById(productInput.getCategoryId());
+            if (category.isEmpty()){
+                return "not found category";
+            }
+            product.setCategory(category.get());
+        }
+
+        if (imageFile != null && !imageFile.isEmpty()){
+            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            product.setProductImg(fileName);
+            FileUploadUtil.saveFile("Images/product-photos/",imageFile,fileName);
+        }
+
+
         productRepository.save(product);
 
-        FileUploadUtil.saveFile("Images/product-photos/",imageFile,fileName);
 
         return "success";
     }

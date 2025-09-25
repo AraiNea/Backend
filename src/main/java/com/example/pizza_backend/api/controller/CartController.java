@@ -60,11 +60,9 @@ public class CartController {
 
     @PostMapping("/updateItems")
     public ResponseEntity<?> updateItem(HttpServletRequest request, @RequestBody CartItemInput cartItemInput) {
-        Long profileId = (Long) request.getAttribute("profile_id");
-        String updateLog = cartItemService.createCartItem(cartItemInput, profileId);
 
         return ResponseEntity.ok()
-                .body(Map.of("message", updateLog));
+                .body(Map.of("message", "ยังไม่ได้ทำ"));
     }
 
 }

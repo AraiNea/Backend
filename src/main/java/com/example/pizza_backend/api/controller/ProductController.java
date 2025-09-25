@@ -4,6 +4,7 @@ import com.example.pizza_backend.api.dto.ProductDto;
 import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -35,9 +36,28 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@RequestPart("product") ProductInput productInput,
+    public ResponseEntity<?> createProduct(
+//                                            HttpServletRequest request,
+                                           @RequestPart("product") ProductInput productInput,
                                            @RequestPart("image") MultipartFile imageFile) throws IOException {
-        String createLog = productService.createProduct(productInput, imageFile);
+//        String usersame = (String) request.getAttribute("username");
+        String username="temp";
+        String createLog = productService.createProduct(productInput, imageFile, username);
+        if (createLog == "success") {
+            return  ResponseEntity.ok()
+                    .body(Map.of("message", "create success"));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateProduct(
+//                                            HttpServletRequest request,
+            @RequestPart("product") ProductInput productInput,
+            @RequestPart("image") MultipartFile imageFile) throws IOException {
+//        String usersame = (String) request.getAttribute("username");
+        String username="temp";
+        String createLog = productService.createProduct(productInput, imageFile, username);
         if (createLog == "success") {
             return  ResponseEntity.ok()
                     .body(Map.of("message", "create success"));

@@ -13,6 +13,7 @@ import com.example.pizza_backend.service.JwtService;
 import com.example.pizza_backend.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -59,6 +60,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @Transactional
     public String createProfileWithAddress(ProfileInput req, Integer role) {
         Profile user = mapper.toProfile(req, role);
         Address address = mapper.toAddress(req);
