@@ -101,7 +101,9 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (imageFile != null && !imageFile.isEmpty()){
+            System.out.println("THIS IS UPDATE WITH PHOTO");
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            FileUploadUtil.deleteFile("Images/product-photos/",product.getProductImg());
             product.setProductImg(fileName);
             FileUploadUtil.saveFile("Images/product-photos/",imageFile,fileName);
         }

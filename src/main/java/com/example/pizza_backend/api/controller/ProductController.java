@@ -60,10 +60,10 @@ public class ProductController {
         String createLog="";
         if (imageFile != null && !imageFile.isEmpty()) {
             // ถ้ามีการส่งไฟล์มา, ให้ update ไฟล์ภาพ
-            createLog = productService.updateProduct(productInput, null, username);
+            createLog = productService.updateProduct(productInput, imageFile, username);
         } else {
             // ถ้าไม่มีไฟล์ภาพ, ให้ทำการ update โดยไม่มีการเปลี่ยนแปลงไฟล์
-            createLog = productService.updateProduct(productInput, imageFile, username);
+            createLog = productService.updateProduct(productInput, null, username);
         }
 
         if (createLog == "success") {
