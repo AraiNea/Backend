@@ -1,11 +1,9 @@
 package com.example.pizza_backend.api.mapper;
 import com.example.pizza_backend.api.dto.input.CartItemInput;
+import com.example.pizza_backend.api.dto.input.CategoryInput;
 import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.input.ProfileInput;
-import com.example.pizza_backend.persistence.entity.Address;
-import com.example.pizza_backend.persistence.entity.CartItem;
-import com.example.pizza_backend.persistence.entity.Product;
-import com.example.pizza_backend.persistence.entity.Profile;
+import com.example.pizza_backend.persistence.entity.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -37,6 +35,9 @@ public interface Mapper {
     @Mapping(target = "createdBy", expression = "java(name)")
     Product toProduct(ProductInput productInput, @Context String name);
 
+    @Mapping(target = "categoryImg", ignore = true)
+    Category toCategory(CategoryInput categoryInput, @Context String name);
+
 
     //UPDATE
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -46,6 +47,11 @@ public interface Mapper {
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "updatedBy", expression = "java(name)")
     void updateProductFromInput(ProductInput productInput, @MappingTarget Product product, @Context String name);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "categoryId", ignore = true)
+    @Mapping(target = "categoryImg", ignore = true)
+    void updateCategoryFromInput(CategoryInput categoryInput, @MappingTarget Category category, @Context String name);
 
 
     // กรณี map กลับก็ทำได้
