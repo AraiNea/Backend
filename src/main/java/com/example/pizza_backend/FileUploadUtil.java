@@ -30,7 +30,11 @@ public class FileUploadUtil {
         Path filePath = uploadPath.resolve(fileName);
 
         try {
-            Files.delete(filePath);
+            if (Files.deleteIfExists(filePath)) {
+                System.out.println("Deleted file: " + fileName);
+            } else {
+                System.out.println("File not found: " + fileName);
+            }
         } catch (IOException e) {
             throw new IOException("Could not delete image file: " + fileName, e);
         }

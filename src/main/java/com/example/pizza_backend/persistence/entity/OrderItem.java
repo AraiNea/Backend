@@ -16,12 +16,10 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Orders order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    private String productNameSnapshot;
-    private Integer unitPrice;
+    private Long productIdSnapshot;
+    private String productName;
+    private String productDetail;
+    private Integer productPrice;
     private Integer qty;
     private Integer lineTotal;
 }

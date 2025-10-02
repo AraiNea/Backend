@@ -101,7 +101,6 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (imageFile != null && !imageFile.isEmpty()){
-            System.out.println("THIS IS UPDATE WITH PHOTO");
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
             FileUploadUtil.deleteFile("Images/product-photos/",product.getProductImg());
             product.setProductImg(fileName);
@@ -112,6 +111,17 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
 
 
+        return "success";
+    }
+
+    @Override
+    @Transactional
+    public String deleteProduct(ProductInput productInput) throws IOException {
+        Long productId = productInput.getProductId();
+        String filename = productRepository.findById(productId).get().getProductImg();
+
+        productRepository.deleteById(productId);
+        FileUploadUtil.deleteFile("Images/product-photos/",filename);
         return "success";
     }
 

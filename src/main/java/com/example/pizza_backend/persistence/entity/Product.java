@@ -4,6 +4,7 @@ package com.example.pizza_backend.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Data
@@ -30,6 +31,9 @@ public class Product {
     private String createdBy;
     private LocalDate updatedAt;
     private String updatedBy;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems;
 
     @Transient
     public String getProductImgPath(){

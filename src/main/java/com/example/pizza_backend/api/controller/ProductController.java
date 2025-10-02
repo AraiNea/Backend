@@ -73,4 +73,19 @@ public class ProductController {
         return ResponseEntity.badRequest().build();
     }
 
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteProduct(
+//          HttpServletRequest request,
+            @RequestBody ProductInput productInput) throws IOException {
+//        String usersame = (String) request.getAttribute("username");
+        String username="temp";
+        System.out.println(productInput);
+        String createLog= productService.deleteProduct(productInput);
+        if (createLog == "success") {
+            return  ResponseEntity.ok()
+                    .body(Map.of("message", "delete success"));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
 }
