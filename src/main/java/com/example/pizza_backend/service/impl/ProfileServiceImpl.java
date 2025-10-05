@@ -82,7 +82,7 @@ public class ProfileServiceImpl implements ProfileService {
         //สร้าง JWT แล้วส่ง token กลับไป
         String token = jwtService.generateToken(Map.of(
                 "profile_id", user.getProfileId(),
-                "username", user.getProfileName(),
+                "username", user.getUsername(),
                 "profile_role", user.getProfileRole()
         ));
         return token;

@@ -11,8 +11,6 @@ public class ProfileInput {
     private String password;
     private String profileName;
     private String profileSname;
-    private Integer profileRole;
-    private LocalDate createdAt;
 
     //Address
     private String phone;

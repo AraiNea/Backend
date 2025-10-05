@@ -61,6 +61,9 @@ public class ProfileController {
 
     @PostMapping("/user/signup")
     public ResponseEntity<?> userSignUp(@RequestBody ProfileInput req) {
+        if (profileService.checkDuplicateProfile(req)){
+            return ResponseEntity.status(401).body(Map.of("message", "username already exists"));
+        }
         String tokenUserSighUp = profileService.createProfileWithAddress(req,1);
         ResponseCookie cookie = ResponseCookie.from("tokenpizza", tokenUserSighUp)
                 .httpOnly(true)
@@ -77,6 +80,9 @@ public class ProfileController {
 
     @PostMapping("/admin/signup")
     public ResponseEntity<?> adminSighIn(@RequestBody ProfileInput req) {
+        if (profileService.checkDuplicateProfile(req)){
+            return ResponseEntity.status(401).body(Map.of("message", "username already exists"));
+        }
         String tokenUserSighUp = profileService.createProfileWithAddress(req,2);
         ResponseCookie cookie = ResponseCookie.from("tokenpizza", tokenUserSighUp)
                 .httpOnly(true)

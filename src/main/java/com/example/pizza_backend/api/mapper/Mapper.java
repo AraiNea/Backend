@@ -18,14 +18,16 @@ public interface Mapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "profileRole", expression = "java(role)")
     @Mapping(target = "address", ignore = true)
+    @Mapping(target = "profileId", ignore = true)
     Profile toProfile(ProfileInput req, @Context Integer role);
 
-
+    @Mapping(target = "addressId", ignore = true)
     Address toAddress(ProfileInput req);
 
 
     @Mapping(target = "cart", ignore = true)
     @Mapping(target = "product", ignore = true)
+    @Mapping(target = "cartItemId", ignore = true)
     CartItem toCartItem(CartItemInput cartItemInput);
 
 
@@ -33,9 +35,11 @@ public interface Mapper {
     @Mapping(target = "productImg", ignore = true)
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "createdBy", expression = "java(name)")
+    @Mapping(target = "productId", ignore = true)
     Product toProduct(ProductInput productInput, @Context String name);
 
     @Mapping(target = "categoryImg", ignore = true)
+    @Mapping(target = "categoryId", ignore = true)
     Category toCategory(CategoryInput categoryInput, @Context String name);
 
 
