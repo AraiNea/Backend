@@ -1,5 +1,6 @@
 package com.example.pizza_backend.Auth;
 
+import com.example.pizza_backend.exception.UnauthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.*;
@@ -25,8 +26,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             System.out.println("AuthInterceptor preHandle");
             Cookie[] cookies = request.getCookies();
             if (cookies == null || cookies.length == 0) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: No cookies found");
-                return false;
+                throw new UnauthorizedException("No cookies found");
             }
 
             // 2. หา cookie ที่ชื่อว่า "tokenpizza"
@@ -40,8 +40,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
 
             if (token == null) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: No token found");
-                return false;
+                throw new UnauthorizedException("No tokenpizza found");
             }
 
             // 3. เตรียม key และถอด token
@@ -64,8 +63,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         } catch (JwtException e) {
             // ถอด token ไม่ได้, ลายเซ็นไม่ตรง, หมดอายุ ฯลฯ
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Invalid token");
-            return false;
+            throw new UnauthorizedException("Invalid Token");
         }
     }
 

@@ -16,6 +16,9 @@ public class FileUploadUtil {
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            throw new IOException("Image file is null or empty");
+        }
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
             Path filePath = uploadPath.resolve(fileName);

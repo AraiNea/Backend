@@ -4,6 +4,7 @@ import com.example.pizza_backend.FileUploadUtil;
 import com.example.pizza_backend.api.dto.CategoryDto;
 import com.example.pizza_backend.api.dto.input.CategoryInput;
 import com.example.pizza_backend.api.mapper.Mapper;
+import com.example.pizza_backend.exception.IdNotFoundException;
 import com.example.pizza_backend.persistence.entity.Category;
 import com.example.pizza_backend.persistence.repository.CategoryRepository;
 import com.example.pizza_backend.service.CategoryService;
@@ -15,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -59,12 +59,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public String updateCategory(CategoryInput categoryInput, MultipartFile imageFile, String username) throws IOException {
-        Long categoryId = categoryInput.getCategoryId();
-        Optional<Category> category_old = categoryRepository.findById(categoryId);
-        if (category_old.isEmpty()){
-            return "not found old category";
+        if (categoryInput.getCategoryId() == null) {
+            throw new IllegalArgumentException("The given category Id cannot be null");
         }
-        Category category = category_old.get();
+        Long categoryId = categoryInput.getCategoryId();
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IdNotFoundException("Category Not found"));
         mapper.updateCategoryFromInput(categoryInput, category, username);
 
         if (imageFile != null && !imageFile.isEmpty()){
@@ -81,10 +81,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public String deleteCategory(CategoryInput categoryInput) throws IOException {
-        Long productId = categoryInput.getCategoryId();
-        String filename = categoryRepository.findById(productId).get().getCategoryImg();
+        if (categoryInput.getCategoryId() == null) {
+            throw new IllegalArgumentException("The given category Id cannot be null");
+        }
+        Long categoryId = categoryInput.getCategoryId();
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IdNotFoundException("Category Not found"));
+        String filename = category.getCategoryImg();
 
-        categoryRepository.deleteById(productId);
+        categoryRepository.deleteById(categoryId);
         FileUploadUtil.deleteFile("Images/category-photos/",filename);
         return "success";
     }

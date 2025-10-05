@@ -45,6 +45,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Optional<Profile> checkLogIn(LoginInput req) {
+        if (req.getUsername() == null || req.getPassword() == null){
+            throw new IllegalArgumentException("The given username or password cannot be null");
+        }
         Optional<Profile> userOpt = profileRepository
                 .findFirstByUsernameAndPassword(req.getUsername(), req.getPassword());
         return userOpt;
@@ -52,6 +55,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Boolean checkDuplicateProfile(ProfileInput req) {
+        if (req.getUsername() == null){
+            throw new IllegalArgumentException("The given username cannot be null");
+        }
         if (profileRepository.existsByUsername(req.getUsername())) {
             return true;
         } else {

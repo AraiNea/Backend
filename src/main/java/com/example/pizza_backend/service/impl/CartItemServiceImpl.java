@@ -3,6 +3,7 @@ package com.example.pizza_backend.service.impl;
 import com.example.pizza_backend.api.dto.CartItemDto;
 import com.example.pizza_backend.api.dto.input.CartItemInput;
 import com.example.pizza_backend.api.mapper.Mapper;
+import com.example.pizza_backend.exception.IdNotFoundException;
 import com.example.pizza_backend.persistence.entity.Cart;
 import com.example.pizza_backend.persistence.entity.CartItem;
 import com.example.pizza_backend.persistence.entity.Product;
@@ -53,20 +54,21 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     @Transactional
     public String createCartItem(CartItemInput cartItemInput, Long profileId) {
-        Optional<Cart> cart = cartRepository.findByProfileProfileId(profileId);
-        if (cart.isEmpty()){
-            return "not found cart";
+        Cart cart = cartRepository.findByProfileProfileId(profileId)
+                .orElseThrow(() -> new IdNotFoundException("Cart not found for this user"));
+
+        if (cartItemInput.getProductId() == null) {
+            throw new IllegalArgumentException("The given product Id cannot be null");
         }
-        Optional<Product> product = productRepository.findById(cartItemInput.getProductId());
-        if (product.isEmpty()){
-            return "not found product";
-        }
+
+        Product product = productRepository.findById(cartItemInput.getProductId())
+                .orElseThrow(() -> new IdNotFoundException("Product Not found"));
 
         CartItem cartItem = mapper.toCartItem(cartItemInput);
-        cartItem.setCart(cart.get());
-        cartItem.setProduct(product.get());
+        cartItem.setCart(cart);
+        cartItem.setProduct(product);
 
         cartItemRepository.save(cartItem);
-        return "create items successfully";
+        return "success";
     }
 }

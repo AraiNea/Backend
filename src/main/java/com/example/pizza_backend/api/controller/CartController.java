@@ -53,9 +53,10 @@ public class CartController {
     public ResponseEntity<?> addItem(HttpServletRequest request, @RequestBody CartItemInput cartItemInput) {
         Long profileId = (Long) request.getAttribute("profile_id");
         String createLog = cartItemService.createCartItem(cartItemInput, profileId);
-
-        return ResponseEntity.ok()
-                .body(Map.of("message", createLog));
+        if  (createLog == "success") {
+            return ResponseEntity.ok().body(Map.of("message", "Add items successfully"));
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/updateItems")

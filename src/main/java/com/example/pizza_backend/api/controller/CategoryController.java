@@ -73,7 +73,7 @@ public class CategoryController {
     @PostMapping("/update")
     public ResponseEntity<?> updateProduct(
 //                                            HttpServletRequest request,
-            @RequestPart("category") CategoryInput categoryInput,
+            @RequestPart(value = "category") CategoryInput categoryInput,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
 //        String usersame = (String) request.getAttribute("username");
         String username="temp";
@@ -97,8 +97,6 @@ public class CategoryController {
     public ResponseEntity<?> deleteProduct(
 //          HttpServletRequest request,
             @RequestBody CategoryInput categoryInput) throws IOException {
-//        String usersame = (String) request.getAttribute("username");
-        String username="temp";
         System.out.println(categoryInput);
         String createLog= categoryService.deleteCategory(categoryInput);
         if (createLog == "success") {
