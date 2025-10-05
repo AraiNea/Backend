@@ -1,8 +1,5 @@
 package com.example.pizza_backend.api.mapper;
-import com.example.pizza_backend.api.dto.input.CartItemInput;
-import com.example.pizza_backend.api.dto.input.CategoryInput;
-import com.example.pizza_backend.api.dto.input.ProductInput;
-import com.example.pizza_backend.api.dto.input.ProfileInput;
+import com.example.pizza_backend.api.dto.input.*;
 import com.example.pizza_backend.persistence.entity.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -24,12 +21,10 @@ public interface Mapper {
     @Mapping(target = "addressId", ignore = true)
     Address toAddress(ProfileInput req);
 
-
     @Mapping(target = "cart", ignore = true)
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "cartItemId", ignore = true)
     CartItem toCartItem(CartItemInput cartItemInput);
-
 
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "productImg", ignore = true)
@@ -41,6 +36,11 @@ public interface Mapper {
     @Mapping(target = "categoryImg", ignore = true)
     @Mapping(target = "categoryId", ignore = true)
     Category toCategory(CategoryInput categoryInput, @Context String name);
+
+    @Mapping(target = "recommendedId", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "recommendedImg", ignore = true)
+    RecommendedProduct toRecommendedProduct(RecommendedInput recommendedInput);
 
 
     //UPDATE
@@ -56,6 +56,12 @@ public interface Mapper {
     @Mapping(target = "categoryId", ignore = true)
     @Mapping(target = "categoryImg", ignore = true)
     void updateCategoryFromInput(CategoryInput categoryInput, @MappingTarget Category category, @Context String name);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "recommendedId", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "recommendedImg", ignore = true)
+    void updateRecommendedProductFromInput(RecommendedInput recommendedInput,@MappingTarget RecommendedProduct recommendedProduct);
 
 
     // กรณี map กลับก็ทำได้

@@ -6,7 +6,7 @@ import com.example.pizza_backend.api.dto.RecommendedProductDto;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.CategoryService;
 import com.example.pizza_backend.service.ProductService;
-import com.example.pizza_backend.service.RecommendedProductService;
+import com.example.pizza_backend.service.RecommendedService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,7 +30,7 @@ class HomeControllerTest {
     private CategoryService categoryService;
 
     @Mock
-    private RecommendedProductService recommendedProductService;
+    private RecommendedService recommendedService;
 
     @InjectMocks
     private HomeController homeController;
@@ -65,7 +65,7 @@ class HomeControllerTest {
         // 🔹 Mock service responses
         when(categoryService.getAllCategories()).thenReturn(List.of(category1));
         when(productService.getAllProducts(req)).thenReturn(List.of(product1));
-        when(recommendedProductService.getAllRecommendedProducts()).thenReturn(List.of(rec1));
+        when(recommendedService.getAllRecommendedProducts()).thenReturn(List.of(rec1));
 
         // Act
         ResponseEntity<Map<String, Object>> response = homeController.getHomeInfo(req);
@@ -122,7 +122,7 @@ class HomeControllerTest {
         // Mock services คืน empty list
         when(categoryService.getAllCategories()).thenReturn(List.of());
         when(productService.getAllProducts(req)).thenReturn(List.of());
-        when(recommendedProductService.getAllRecommendedProducts()).thenReturn(List.of());
+        when(recommendedService.getAllRecommendedProducts()).thenReturn(List.of());
 
         // Act
         ResponseEntity<Map<String, Object>> response = homeController.getHomeInfo(req);

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RecommendedProductRepository extends JpaRepository<RecommendedProduct, Long> {
+public interface RecommendedRepository extends JpaRepository<RecommendedProduct, Long> {
 
     @Query("SELECT r FROM RecommendedProduct r ORDER BY r.priority")
     List<RecommendedProduct> getAllRecommendedProducts();

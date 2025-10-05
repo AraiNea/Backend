@@ -6,6 +6,6 @@ import lombok.Data;
 public class CategoryInput {
     private Long categoryId;
     private String categoryName;
-    private String categoryPriority;
-    private Integer categoryProductPath;
+    private Integer categoryPriority;
+    private String categoryProductPath;
 }

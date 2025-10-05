@@ -1,11 +1,11 @@
 package com.example.pizza_backend.api.controller;
 
-import com.example.pizza_backend.api.dto.CategoryDto;
 import com.example.pizza_backend.api.dto.ProductDto;
-import com.example.pizza_backend.api.dto.input.CategoryInput;
+import com.example.pizza_backend.api.dto.RecommendedProductDto;
+import com.example.pizza_backend.api.dto.input.ProductInput;
+import com.example.pizza_backend.api.dto.input.RecommendedInput;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
-import com.example.pizza_backend.service.CategoryService;
-import com.example.pizza_backend.service.ProductService;
+import com.example.pizza_backend.service.RecommendedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,54 +15,34 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/category")
-public class CategoryController {
+@RequestMapping("/recommend")
+public class RecommendedController {
 
-    private ProductService productService;
-    private CategoryService categoryService;
+    private final RecommendedService recommendedService;
 
     @Autowired
-    public void setProductService(ProductService productService,  CategoryService categoryService) {
-        this.productService = productService;
-        this.categoryService = categoryService;
-    }
-
-    @GetMapping("/")
-    public ResponseEntity<?> getAllCategories(@ModelAttribute ProductSearchReq req) {
-        List<CategoryDto> categories = categoryService.getAllCategories();
-        List<ProductDto> products = productService.getAllProducts(req);
-
-
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("categories", categories);
-        response.put("products", products);
-
-        return ResponseEntity.ok(response);
+    public RecommendedController(RecommendedService recommendedService) {
+        this.recommendedService = recommendedService;
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllCategoriesOnly() {
-        List<CategoryDto> categories = categoryService.getAllCategories();
-
-
+    public ResponseEntity<Map<String, Object>> getAllRecommended() {
+        List<RecommendedProductDto> rec = recommendedService.getAllRecommendedProducts();
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put("categories", categories);
-
+        response.put("recommended", rec);
         return ResponseEntity.ok(response);
     }
 
-
     @PostMapping("/create")
-    public ResponseEntity<?> createProduct(
+    public ResponseEntity<?> createRecommended(
 //                                            HttpServletRequest request,
-            @RequestPart("category") CategoryInput categoryInput,
+            @RequestPart("recommended") RecommendedInput recommendedInput,
             @RequestPart("image") MultipartFile imageFile) throws IOException {
 //        String usersame = (String) request.getAttribute("username");
         String username="temp";
-        String createLog = categoryService.createCategory(categoryInput, imageFile, username);
+        String createLog = recommendedService.createRecommended(recommendedInput, imageFile);
         if (createLog == "success") {
             return  ResponseEntity.ok()
                     .body(Map.of("message", "create success"));
@@ -71,19 +51,19 @@ public class CategoryController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateProduct(
+    public ResponseEntity<?> updateRecommended(
 //                                            HttpServletRequest request,
-            @RequestPart(value = "category") CategoryInput categoryInput,
+            @RequestPart("recommended") RecommendedInput recommendedInput,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
 //        String usersame = (String) request.getAttribute("username");
         String username="temp";
         String createLog="";
         if (imageFile != null && !imageFile.isEmpty()) {
             // ถ้ามีการส่งไฟล์มา, ให้ update ไฟล์ภาพ
-            createLog = categoryService.updateCategory(categoryInput, imageFile, username);
+            createLog = recommendedService.updateRecommended(recommendedInput, imageFile);
         } else {
             // ถ้าไม่มีไฟล์ภาพ, ให้ทำการ update โดยไม่มีการเปลี่ยนแปลงไฟล์
-            createLog = categoryService.updateCategory(categoryInput, null, username);
+            createLog = recommendedService.updateRecommended(recommendedInput, null);
         }
 
         if (createLog == "success") {
@@ -94,11 +74,11 @@ public class CategoryController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteProduct(
+    public ResponseEntity<?> deleteRecommended(
 //          HttpServletRequest request,
-            @RequestBody CategoryInput categoryInput) throws IOException {
-        System.out.println(categoryInput);
-        String createLog= categoryService.deleteCategory(categoryInput);
+            @RequestBody RecommendedInput recommendedInput) throws IOException {
+        System.out.println(recommendedInput);
+        String createLog= recommendedService.deleteRecommended(recommendedInput);
         if (createLog == "success") {
             return  ResponseEntity.ok()
                     .body(Map.of("message", "delete success"));

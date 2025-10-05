@@ -7,8 +7,7 @@ import com.example.pizza_backend.api.dto.RecommendedProductDto;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.CategoryService;
 import com.example.pizza_backend.service.ProductService;
-import com.example.pizza_backend.service.RecommendedProductService;
-import lombok.RequiredArgsConstructor;
+import com.example.pizza_backend.service.RecommendedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +26,20 @@ public class HomeController {
 
     private ProductService productService;
     private CategoryService categoryService;
-    private RecommendedProductService  recommendedProductService;
+    private RecommendedService recommendedService;
 
     @Autowired
-    public void setProductService(ProductService productService,  CategoryService categoryService, RecommendedProductService recommendedProductService) {
+    public void setProductService(ProductService productService,  CategoryService categoryService, RecommendedService recommendedService) {
         this.productService = productService;
         this.categoryService = categoryService;
-        this.recommendedProductService = recommendedProductService;
+        this.recommendedService = recommendedService;
     }
 
     @GetMapping("/")
     public ResponseEntity<Map<String, Object>> getHomeInfo(@ModelAttribute ProductSearchReq req) {
         List<CategoryDto> categories = categoryService.getAllCategories();
         List<ProductDto> products = productService.getAllProducts(req);
-        List<RecommendedProductDto> recommends = recommendedProductService.getAllRecommendedProducts();
+        List<RecommendedProductDto> recommends = recommendedService.getAllRecommendedProducts();
 
 
         //จัดกลุ่ม product ตาม categoryId
