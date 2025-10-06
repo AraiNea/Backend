@@ -6,5 +6,4 @@ import lombok.Data;
 public class RecommendedInput {
     private Long recommendedId;
     private Long productId;
-    private Integer priority;
 }

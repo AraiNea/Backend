@@ -16,7 +16,6 @@ public class RecommendedProduct {
     private Product product;
 
     private String recommendedImg;
-    private Integer priority;
 
     @Transient
     public String getRecommendImgPath(){

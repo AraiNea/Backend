@@ -61,7 +61,7 @@ class HomeControllerTest {
         when(rec1.getRecommendedImg()).thenReturn("pepperoni.png");
         //JOMJAI DELETE THIS LINE BELOW
         // when(rec1.getRecProductPath()).thenReturn("/recommended/pepperoni");
-        when(rec1.getPriority()).thenReturn(1);
+//        when(rec1.getPriority()).thenReturn(1);
 
         // 🔹 Mock service responses
         when(categoryService.getAllCategories()).thenReturn(List.of(category1));
@@ -106,15 +106,14 @@ class HomeControllerTest {
         assertThat(recommends)
                 .extracting(RecommendedProductDto::getRecommendedImg)
                 .contains("pepperoni.png");
-        
+
         //JOMJAI DELETE THIS LINE BELOW
 //        assertThat(recommends)
 //                .extracting(RecommendedProductDto::getRecProductPath)
 //                .contains("/recommended/pepperoni");
-
-        assertThat(recommends)
-                .extracting(RecommendedProductDto::getPriority)
-                .contains(1);
+//        assertThat(recommends)
+//                .extracting(RecommendedProductDto::getPriority)
+//                .contains(1);
     }
 
     @Test
