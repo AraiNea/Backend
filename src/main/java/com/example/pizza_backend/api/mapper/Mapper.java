@@ -12,7 +12,7 @@ public interface Mapper {
     // Mapping จาก DTO → Entity
 
     // CREATE
-    @Mapping(target = "createdAt", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "profileRole", expression = "java(role)")
     @Mapping(target = "address", ignore = true)
     @Mapping(target = "profileId", ignore = true)
@@ -28,7 +28,7 @@ public interface Mapper {
 
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "productImg", ignore = true)
-    @Mapping(target = "createdAt", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "createdBy", expression = "java(name)")
     @Mapping(target = "productId", ignore = true)
     Product toProduct(ProductInput productInput, @Context String name);
@@ -56,7 +56,7 @@ public interface Mapper {
     @Mapping(target = "category", ignore = true)     // handle manually
     @Mapping(target = "productImg", ignore = true)   // handle manually
     @Mapping(target = "productId", ignore = true)   // for update
-    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "updatedBy", expression = "java(name)")
     void updateProductFromInput(ProductInput productInput, @MappingTarget Product product, @Context String name);
 

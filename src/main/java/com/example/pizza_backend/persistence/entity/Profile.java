@@ -3,6 +3,7 @@ package com.example.pizza_backend.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
@@ -26,7 +27,7 @@ public class Profile {
 
     private String username;
     private String password;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<Orders> orders;

@@ -4,6 +4,7 @@ package com.example.pizza_backend.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -27,9 +28,9 @@ public class Product {
     private Integer productPrice;
     private Integer productStock;
     private Integer isActive;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private String createdBy;
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     private String updatedBy;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

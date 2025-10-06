@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -81,7 +82,7 @@ public class ProfileServiceImpl implements ProfileService {
             cartRepository.save(cart);
             addressRepository.save(address);
         }
-        user.setCreatedAt(LocalDate.now());
+        user.setCreatedAt(LocalDateTime.now());
         user.setProfileRole(role);
         profileRepository.save(user);
 
