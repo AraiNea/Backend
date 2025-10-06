@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class CartItemInput {
+    private Long cartItemId;
     private Long productId;
     private Integer qty;
     private Integer lineTotal;

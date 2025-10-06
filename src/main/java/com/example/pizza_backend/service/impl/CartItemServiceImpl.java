@@ -64,11 +64,64 @@ public class CartItemServiceImpl implements CartItemService {
         Product product = productRepository.findById(cartItemInput.getProductId())
                 .orElseThrow(() -> new IdNotFoundException("Product Not found"));
 
+        //หาว่า product นี้มีอยู่ใน cart แล้วหรือยัง
+        Optional<CartItem> existingItemOpt = cartItemRepository.findByCartCartIdAndProductProductId(cart.getCartId(), product.getProductId());
+
+        if (existingItemOpt.isPresent()) {
+            //ถ้ามีอยู่แล้ว — set cartItemId ลงใน input แล้วไป update แทน
+            CartItem existingItem = existingItemOpt.get();
+            cartItemInput.setCartItemId(existingItem.getCartItemId());
+
+            // อาจจะเพิ่ม qty เดิม + ใหม่
+            cartItemInput.setQty(existingItem.getQty() + cartItemInput.getQty());
+
+            return updateCartItem(cartItemInput, profileId);
+        }
+
         CartItem cartItem = mapper.toCartItem(cartItemInput);
         cartItem.setCart(cart);
         cartItem.setProduct(product);
 
         cartItemRepository.save(cartItem);
+        return "success";
+    }
+
+    @Override
+    @Transactional
+    public String updateCartItem(CartItemInput cartItemInput, Long profileId) {
+        cartRepository.findByProfileProfileId(profileId)
+                .orElseThrow(() -> new IdNotFoundException("Cart not found for this user"));
+
+        if (cartItemInput.getCartItemId() == null) {
+            throw new IllegalArgumentException("The given cart item Id cannot be null");
+        }
+        CartItem cartItem = cartItemRepository.findById(cartItemInput.getCartItemId())
+                .orElseThrow(() -> new IdNotFoundException("Cart Item Not found"));
+
+        List<Long> allCartItemId = cartItemRepository.findCartItemIdsByProfileId(profileId);
+        if (!allCartItemId.contains(cartItemInput.getCartItemId())) {
+            throw new IllegalArgumentException("Access denied: this cart item does not belong to the current user.");
+        }
+
+        mapper.updateCartItemFromInput(cartItemInput, cartItem);
+        cartItemRepository.save(cartItem);
+
+        return "success";
+    }
+
+    @Override
+    public String deleteCartItem(CartItemInput cartItemInput, Long profileId) {
+        cartRepository.findByProfileProfileId(profileId)
+                .orElseThrow(() -> new IdNotFoundException("Cart not found for this user"));
+
+        if (cartItemInput.getCartItemId() == null) {
+            throw new IllegalArgumentException("The given cart item Id cannot be null");
+        }
+        List<Long> allCartItemId = cartItemRepository.findCartItemIdsByProfileId(profileId);
+        if (!allCartItemId.contains(cartItemInput.getCartItemId())) {
+            throw new IllegalArgumentException("Access denied: this cart item does not belong to the current user.");
+        }
+        cartItemRepository.deleteById(cartItemInput.getCartItemId());
         return "success";
     }
 }

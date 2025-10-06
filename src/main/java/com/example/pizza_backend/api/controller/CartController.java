@@ -61,9 +61,22 @@ public class CartController {
 
     @PostMapping("/updateItems")
     public ResponseEntity<?> updateItem(HttpServletRequest request, @RequestBody CartItemInput cartItemInput) {
+        Long profileId = (Long) request.getAttribute("profile_id");
+        String createLog = cartItemService.updateCartItem(cartItemInput, profileId);
+        if  (createLog == "success") {
+            return ResponseEntity.ok().body(Map.of("message", "Update items successfully"));
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
-        return ResponseEntity.ok()
-                .body(Map.of("message", "ยังไม่ได้ทำ"));
+    @PostMapping("/deleteItems")
+    public ResponseEntity<?> deleteItem(HttpServletRequest request, @RequestBody CartItemInput cartItemInput) {
+        Long profileId = (Long) request.getAttribute("profile_id");
+        String createLog = cartItemService.deleteCartItem(cartItemInput, profileId);
+        if  (createLog == "success") {
+            return ResponseEntity.ok().body(Map.of("message", "Delete items successfully"));
+        }
+        return ResponseEntity.badRequest().build();
     }
 
 }
