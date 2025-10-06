@@ -40,16 +40,7 @@ public class CartItemServiceImpl implements CartItemService {
     public List<CartItemDto> getCartItemsByCartId(Long cartId) {
         List<CartItem> cartItems = cartItemRepository.findByCartCartId(cartId);
         return cartItems.stream()
-                .map(c->CartItemDto.builder()
-                        .cartItemId(c.getCartItemId())
-                        .cartId(c.getCart().getCartId())
-                        .productId(c.getProduct().getProductId())
-                        .productName(c.getProduct().getProductName())
-                        .productDetail(c.getProduct().getProductDetail())
-                        .productPrice(c.getProduct().getProductPrice())
-                        .qty(c.getQty())
-                        .lineTotal(c.getLineTotal())
-                        .build())
+                .map(c->mapper.toCartItemDto(c))
                 .toList();
     }
 

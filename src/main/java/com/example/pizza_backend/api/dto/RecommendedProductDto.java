@@ -12,6 +12,5 @@ public class RecommendedProductDto {
     private Long recommendedId;
     private String productId;
     private String recommendedImg;
-    private String recProductPath;
     private Integer priority;
 }

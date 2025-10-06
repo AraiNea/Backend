@@ -12,7 +12,6 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CartItemDto {
     private Long cartItemId;
-    private Long cartId;
     private Long productId;
     private String productName;
     private String productDetail;

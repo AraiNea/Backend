@@ -51,15 +51,7 @@ public class ProductServiceImpl implements ProductService {
                 req.getIsActive()
         );
         return products.stream()
-                .map(p -> ProductDto.builder()
-                        .productId(p.getProductId())
-                        .categoryId(p.getCategory().getCategoryId())
-                        .productName(p.getProductName())
-                        .productDetail(p.getProductDetail())
-                        .productPrice(p.getProductPrice())
-                        .productStock(p.getProductStock())
-                        .productImgPath(p.getProductImgPath())
-                        .build())
+                .map(p -> mapper.toProductDto(p))
                 .toList();
     }
 

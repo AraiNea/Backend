@@ -1,4 +1,5 @@
 package com.example.pizza_backend.api.mapper;
+import com.example.pizza_backend.api.dto.*;
 import com.example.pizza_backend.api.dto.input.*;
 import com.example.pizza_backend.persistence.entity.*;
 import org.mapstruct.*;
@@ -72,7 +73,30 @@ public interface Mapper {
     void updateRecommendedProductFromInput(RecommendedInput recommendedInput,@MappingTarget RecommendedProduct recommendedProduct);
 
 
-    // กรณี map กลับก็ทำได้
-    // ProfileInputReq toDto(Profile profile);
+    // กรณี map กลับส่งไปหน้าบ้าน
+    AddressDto toAddressDto(Address address);
+
+    @Mapping(target = "cartItems", ignore = true)
+    CartDto toCartDto(Cart cart);
+
+    @Mapping(source = "product.productId", target = "productId")
+    @Mapping(source = "product.productName", target = "productName")
+    @Mapping(source = "product.productDetail", target = "productDetail")
+    @Mapping(source = "product.productPrice", target = "productPrice")
+    CartItemDto toCartItemDto(CartItem cartItem);
+
+    CategoryDto toCategoryDto(Category category);
+
+    OrderItemDto toOrderItemDto(OrderItem orderItem);
+
+    @Mapping(source = "profile.username", target = "username")
+    OrderDto toOrderDto(Orders order);
+
+    @Mapping(source = "category.categoryId", target = "categoryId")
+    @Mapping(source = "category.categoryName", target = "categoryName")
+    ProductDto toProductDto(Product product);
+
+    @Mapping(source = "product.productId", target = "productId")
+    RecommendedProductDto toRecommendedProductDto(RecommendedProduct recommendedProduct);
 }
 

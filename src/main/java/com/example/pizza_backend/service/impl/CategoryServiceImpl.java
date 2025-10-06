@@ -33,13 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDto> getAllCategories() {
         List<Category>  categories = categoryRepository.findAllByOrderByCategoryPriorityAsc();
         return categories.stream()
-                .map((c-> CategoryDto.builder()
-                        .categoryId(c.getCategoryId())
-                        .categoryName(c.getCategoryName())
-                        .categoryImg(c.getCategoryImg())
-                        .categoryProductPath(c.getCategoryProductPath())
-                        .categoryPriority(c.getCategoryPriority())
-                        .build()))
+                .map(c-> mapper.toCategoryDto(c))
                 .toList();
     }
 

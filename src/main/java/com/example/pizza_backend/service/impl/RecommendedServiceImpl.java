@@ -37,10 +37,7 @@ public class RecommendedServiceImpl implements RecommendedService {
     public List<RecommendedProductDto> getAllRecommendedProducts() {
         List<RecommendedProduct> recommendedProducts = recommendedRepository.findAll();
         return recommendedProducts.stream()
-                .map(r -> RecommendedProductDto.builder()
-                        .recommendedId(r.getRecommendedId())
-                        .recommendedImg(r.getRecommendImgPath())
-                        .build())
+                .map(r -> mapper.toRecommendedProductDto(r))
                 .toList();
     }
 
