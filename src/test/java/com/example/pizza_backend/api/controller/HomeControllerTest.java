@@ -59,7 +59,8 @@ class HomeControllerTest {
         when(rec1.getRecommendedId()).thenReturn(500L);
         when(rec1.getProductId()).thenReturn("P101");
         when(rec1.getRecommendedImg()).thenReturn("pepperoni.png");
-        when(rec1.getRecProductPath()).thenReturn("/recommended/pepperoni");
+        //JOMJAI DELETE THIS LINE BELOW
+        // when(rec1.getRecProductPath()).thenReturn("/recommended/pepperoni");
         when(rec1.getPriority()).thenReturn(1);
 
         // 🔹 Mock service responses
@@ -105,10 +106,11 @@ class HomeControllerTest {
         assertThat(recommends)
                 .extracting(RecommendedProductDto::getRecommendedImg)
                 .contains("pepperoni.png");
-
-        assertThat(recommends)
-                .extracting(RecommendedProductDto::getRecProductPath)
-                .contains("/recommended/pepperoni");
+        
+        //JOMJAI DELETE THIS LINE BELOW
+//        assertThat(recommends)
+//                .extracting(RecommendedProductDto::getRecProductPath)
+//                .contains("/recommended/pepperoni");
 
         assertThat(recommends)
                 .extracting(RecommendedProductDto::getPriority)
