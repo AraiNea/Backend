@@ -30,7 +30,7 @@ public class WebConfig {
             @Override
             public void addInterceptors(@NonNull InterceptorRegistry registry) {
                 registry.addInterceptor(authInterceptor)
-                        .addPathPatterns("/cart/**","/order/**")         // ตรวจเฉพาะ path นี้
+                        .addPathPatterns("/cart/**","/order/**","/address/**")         // ตรวจเฉพาะ path นี้
                         .excludePathPatterns("/login/**");    // ยกเว้น path นี้
                 registry.addInterceptor(adminInterceptor)
                         .addPathPatterns("/admin/**"

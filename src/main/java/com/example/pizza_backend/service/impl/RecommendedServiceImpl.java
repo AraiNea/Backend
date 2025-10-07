@@ -18,6 +18,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -43,49 +47,25 @@ public class RecommendedServiceImpl implements RecommendedService {
 
     @Override
     @Transactional
-    public String createRecommended(RecommendedInput recommendedInput, MultipartFile imageFile) throws IOException {
+    public String createRecommended(RecommendedInput recommendedInput) throws IOException {
         if (recommendedInput.getProductId() == null) {
             throw new IllegalArgumentException("The given product Id cannot be null");
         }
         Product product = productRepository.findById(recommendedInput.getProductId())
                 .orElseThrow(() -> new IdNotFoundException("Product Not found"));
         RecommendedProduct recommendedProduct = mapper.toRecommendedProduct(recommendedInput);
-        String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+        String fileName = product.getProductImg();
+
+        Path sourcePath = Paths.get("Images/product-photos/" + fileName);
+        Path targetPath = Paths.get("Images/recommended-photos/" + fileName);
+        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+
         recommendedProduct.setProduct(product);
         recommendedProduct.setRecommendedImg(fileName);
         recommendedRepository.save(recommendedProduct);
-        FileUploadUtil.saveFile("Images/recommended-photos/",imageFile,fileName);
         return "success";
     }
 
-    @Override
-    @Transactional
-    public String updateRecommended(RecommendedInput recommendedInput, MultipartFile imageFile) throws IOException {
-        if (recommendedInput.getRecommendedId() == null) {
-            throw new IllegalArgumentException("The given recommended Id cannot be null");
-        }
-        Long recommendId = recommendedInput.getRecommendedId();
-        RecommendedProduct recommendedProduct = recommendedRepository.findById(recommendId)
-                .orElseThrow(() -> new IdNotFoundException("Recommended Not found"));
-
-        mapper.updateRecommendedProductFromInput(recommendedInput, recommendedProduct);
-
-        if (recommendedInput.getProductId() != null) {
-            Product product = productRepository.findById(recommendedInput.getProductId())
-                    .orElseThrow(() -> new IdNotFoundException("Product Not found"));
-            recommendedProduct.setProduct(product);
-        }
-
-        if (imageFile != null && !imageFile.isEmpty()){
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            FileUploadUtil.deleteFile("Images/recommended-photos/",recommendedProduct.getRecommendedImg());
-            recommendedProduct.setRecommendedImg(fileName);
-            FileUploadUtil.saveFile("Images/recommended-photos/",imageFile,fileName);
-        }
-
-        recommendedRepository.save(recommendedProduct);
-        return "success";
-    }
 
     @Override
     @Transactional

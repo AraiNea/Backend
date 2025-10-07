@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface RecommendedService {
     List<RecommendedProductDto> getAllRecommendedProducts();
-    String createRecommended(RecommendedInput recommendedInput, MultipartFile imageFile) throws IOException;
-    String updateRecommended(RecommendedInput recommendedInput, MultipartFile imageFile) throws IOException;
+    String createRecommended(RecommendedInput recommendedInput) throws IOException;
     String deleteRecommended(RecommendedInput recommendedInput) throws IOException;
 }

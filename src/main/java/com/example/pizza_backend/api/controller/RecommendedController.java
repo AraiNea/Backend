@@ -38,37 +38,13 @@ public class RecommendedController {
     @PostMapping("/create")
     public ResponseEntity<?> createRecommended(
 //                                            HttpServletRequest request,
-            @RequestPart("recommended") RecommendedInput recommendedInput,
-            @RequestPart("image") MultipartFile imageFile) throws IOException {
+            @RequestBody RecommendedInput recommendedInput) throws IOException {
 //        String usersame = (String) request.getAttribute("username");
         String username="temp";
-        String createLog = recommendedService.createRecommended(recommendedInput, imageFile);
+        String createLog = recommendedService.createRecommended(recommendedInput);
         if (createLog == "success") {
             return  ResponseEntity.ok()
                     .body(Map.of("message", "create success"));
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-    @PostMapping("/update")
-    public ResponseEntity<?> updateRecommended(
-//                                            HttpServletRequest request,
-            @RequestPart("recommended") RecommendedInput recommendedInput,
-            @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
-//        String usersame = (String) request.getAttribute("username");
-        String username="temp";
-        String createLog="";
-        if (imageFile != null && !imageFile.isEmpty()) {
-            // ถ้ามีการส่งไฟล์มา, ให้ update ไฟล์ภาพ
-            createLog = recommendedService.updateRecommended(recommendedInput, imageFile);
-        } else {
-            // ถ้าไม่มีไฟล์ภาพ, ให้ทำการ update โดยไม่มีการเปลี่ยนแปลงไฟล์
-            createLog = recommendedService.updateRecommended(recommendedInput, null);
-        }
-
-        if (createLog == "success") {
-            return  ResponseEntity.ok()
-                    .body(Map.of("message", "update success"));
         }
         return ResponseEntity.badRequest().build();
     }

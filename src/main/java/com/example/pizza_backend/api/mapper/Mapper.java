@@ -67,10 +67,14 @@ public interface Mapper {
     void updateCategoryFromInput(CategoryInput categoryInput, @MappingTarget Category category, @Context String name);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "recommendedId", ignore = true)
-    @Mapping(target = "product", ignore = true)
-    @Mapping(target = "recommendedImg", ignore = true)
-    void updateRecommendedProductFromInput(RecommendedInput recommendedInput,@MappingTarget RecommendedProduct recommendedProduct);
+    @Mapping(target = "addressId", ignore = true)
+    void updateAddressFromInput(AddressInput addressInput, @MappingTarget Address address);
+
+//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+//    @Mapping(target = "recommendedId", ignore = true)
+//    @Mapping(target = "product", ignore = true)
+//    @Mapping(target = "recommendedImg", ignore = true)
+//    void updateRecommendedProductFromInput(RecommendedInput recommendedInput,@MappingTarget RecommendedProduct recommendedProduct);
 
 
     // กรณี map กลับส่งไปหน้าบ้าน
