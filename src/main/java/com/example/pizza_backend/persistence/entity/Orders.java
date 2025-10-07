@@ -3,6 +3,7 @@ package com.example.pizza_backend.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 @Entity
@@ -24,7 +25,7 @@ public class Orders {
     private Integer subtotal;
     private Integer deliveryFee;
     private Integer grandTotal;
-    private LocalDate createdAt;
-    private LocalDate fulfilledAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime fulfilledAt;
     private String fulfilledBy;
 }

@@ -2,21 +2,20 @@ package com.example.pizza_backend.api.controller;
 
 
 import com.example.pizza_backend.api.dto.*;
-import com.example.pizza_backend.persistence.repository.OrderRepository;
+import com.example.pizza_backend.api.dto.input.OrderAndItemInput;
+import com.example.pizza_backend.api.dto.input.OrderInput;
+import com.example.pizza_backend.service.CartItemService;
 import com.example.pizza_backend.service.OrderItemService;
 import com.example.pizza_backend.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/order")
@@ -24,14 +23,16 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderItemService orderItemService;
+    private final CartItemService cartItemService;
 
     @Autowired
-    public OrderController(OrderService orderService, OrderItemService orderItemService) {
+    public OrderController(OrderService orderService, OrderItemService orderItemService, CartItemService cartItemService) {
         this.orderService = orderService;
         this.orderItemService = orderItemService;
+        this.cartItemService = cartItemService;
     }
 
-    @GetMapping("/list")
+    @GetMapping("/")
     public ResponseEntity<?> getOrders(HttpServletRequest request) {
         // ดึง profile_id ที่ถูก set มาจาก Interceptor
         Long profileId = (Long) request.getAttribute("profile_id");
@@ -51,5 +52,30 @@ public class OrderController {
         response.put("results", results);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createOrder(HttpServletRequest request,
+                                         @RequestBody OrderAndItemInput orderAndItemInput) {
+        Long profileId = (Long) request.getAttribute("profile_id");
+        String createLog = orderService.createOrderAndOrderItems(orderAndItemInput, profileId);
+        String deleteLog = cartItemService.clearAllCartItem(profileId);
+        if (createLog == "success" && deleteLog == "success") {
+            return  ResponseEntity.ok()
+                    .body(Map.of("message", "create order and clear cart success"));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateOrder(HttpServletRequest request,
+                                         @RequestBody OrderInput orderInput) {
+        String username = (String) request.getAttribute("username");
+        String createLog = orderService.updateOrder(orderInput, username);
+        if (createLog == "success") {
+            return  ResponseEntity.ok()
+                    .body(Map.of("message", "Update order success"));
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

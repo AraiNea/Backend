@@ -8,4 +8,9 @@ public class CartItemInput {
     private Long productId;
     private Integer qty;
     private Integer lineTotal;
+
+    //สำหรับเพิ่มใส่ order
+    private String productName;
+    private String productDetail;
+    private Double productPrice;
 }

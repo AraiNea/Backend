@@ -43,6 +43,16 @@ public interface Mapper {
     @Mapping(target = "recommendedImg", ignore = true)
     RecommendedProduct toRecommendedProduct(RecommendedInput recommendedInput);
 
+    @Mapping(source = "productId", target = "productIdSnapshot")
+    @Mapping(target = "order", ignore = true)
+    OrderItem toOrderItem(CartItemInput cartItemInput);
+
+    @Mapping(target = "orderId", ignore = true)
+    @Mapping(target = "profile", ignore = true)
+    @Mapping(target = "address", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+    Orders toOrder(OrderInput orderInput);
+
 
     //UPDATE
 
@@ -69,6 +79,14 @@ public interface Mapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "addressId", ignore = true)
     void updateAddressFromInput(AddressInput addressInput, @MappingTarget Address address);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "orderId", ignore = true)
+    @Mapping(target = "profile", ignore = true)
+    @Mapping(target = "address", ignore = true)
+    @Mapping(target = "fulfilledAt", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "fulfilledBy", expression = "java(name)")
+    void updateOrderFromInput(OrderInput orderInput, @MappingTarget Orders orders, @Context String name);
 
 //    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 //    @Mapping(target = "recommendedId", ignore = true)

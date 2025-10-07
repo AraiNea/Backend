@@ -11,5 +11,12 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category,Long> {
-    List<Category> findAllByOrderByCategoryPriorityAsc();
+
+    @Query("SELECT c FROM Category c WHERE 1=1" +
+            "AND (:categoryId IS NULL OR c.categoryId = :categoryId)" +
+            "AND (:categoryName IS NULL OR c.categoryName LIKE %:categoryName%)")
+    List<Category> searchCategory(
+            @Param("categoryId") Long categoryId,
+            @Param("categoryName") String categoryName
+    );
 }

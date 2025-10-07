@@ -3,6 +3,7 @@ package com.example.pizza_backend.service.impl;
 import com.example.pizza_backend.FileUploadUtil;
 import com.example.pizza_backend.api.dto.CategoryDto;
 import com.example.pizza_backend.api.dto.input.CategoryInput;
+import com.example.pizza_backend.api.dto.search.CategorySearchReq;
 import com.example.pizza_backend.api.mapper.Mapper;
 import com.example.pizza_backend.exception.IdNotFoundException;
 import com.example.pizza_backend.persistence.entity.Category;
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,8 +32,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> getAllCategories() {
-        List<Category>  categories = categoryRepository.findAllByOrderByCategoryPriorityAsc();
+    public List<CategoryDto> getAllCategories(CategorySearchReq req) {
+        List<Category> categories = new ArrayList<>();
+        if (req != null) {
+            categories = categoryRepository.searchCategory(
+                    req.getCategoryId(),
+                    req.getCategoryName()
+            );
+        } else {
+            categories = categoryRepository.findAll();
+        }
         return categories.stream()
                 .map(c-> mapper.toCategoryDto(c))
                 .toList();

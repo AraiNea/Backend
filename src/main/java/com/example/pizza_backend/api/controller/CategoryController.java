@@ -3,6 +3,7 @@ package com.example.pizza_backend.api.controller;
 import com.example.pizza_backend.api.dto.CategoryDto;
 import com.example.pizza_backend.api.dto.ProductDto;
 import com.example.pizza_backend.api.dto.input.CategoryInput;
+import com.example.pizza_backend.api.dto.search.CategorySearchReq;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.CategoryService;
 import com.example.pizza_backend.service.ProductService;
@@ -44,8 +45,8 @@ public class CategoryController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllCategoriesOnly() {
-        List<CategoryDto> categories = categoryService.getAllCategories();
+    public ResponseEntity<?> getAllCategoriesOnly(@ModelAttribute CategorySearchReq req) {
+        List<CategoryDto> categories = categoryService.getAllCategories(req);
 
 
         Map<String, Object> response = new LinkedHashMap<>();

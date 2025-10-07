@@ -103,6 +103,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
+    @Transactional
     public String deleteCartItem(CartItemInput cartItemInput, Long profileId) {
         cartRepository.findByProfileProfileId(profileId)
                 .orElseThrow(() -> new IdNotFoundException("Cart not found for this user"));
@@ -115,6 +116,16 @@ public class CartItemServiceImpl implements CartItemService {
             throw new IllegalArgumentException("Access denied: this cart item does not belong to the current user.");
         }
         cartItemRepository.deleteById(cartItemInput.getCartItemId());
+        return "success";
+    }
+
+    @Override
+    @Transactional
+    public String clearAllCartItem(Long profileId) {
+        Cart cart = cartRepository.findByProfileProfileId(profileId)
+                .orElseThrow(() -> new IdNotFoundException("Cart not found for this user"));
+        Long cartId = cart.getCartId();
+        cartItemRepository.deleteByCartCartId(cartId);
         return "success";
     }
 }

@@ -10,4 +10,5 @@ public interface CartItemService {
     String createCartItem(CartItemInput cartItemInput, Long profileId);
     String updateCartItem(CartItemInput cartItemInput, Long profileId);
     String deleteCartItem(CartItemInput cartItemInput, Long profileId);
+    String clearAllCartItem(Long profileId);
 }
