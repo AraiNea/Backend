@@ -1,0 +1,4 @@
+FROM postgres:16
+ENV POSTGRES_USER=pizzauser
+ENV POSTGRES_PASSWORD=pizzapass
+ENV POSTGRES_DB=pizza
