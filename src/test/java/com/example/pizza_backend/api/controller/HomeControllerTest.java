@@ -60,8 +60,7 @@ class HomeControllerTest {
         RecommendedProductDto rec1 = RecommendedProductDto.builder()
                 .recommendedId(1L)
                 .productId(Long.valueOf("100"))
-                .recommendedImg("img1.jpg")
-                .priority(1)
+                .recommendImgPath("img1.jpg")
                 .build();
         List<RecommendedProductDto> recommended = List.of(rec1);
 
