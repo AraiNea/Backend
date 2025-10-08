@@ -1,9 +1,11 @@
 package com.example.pizza_backend.api.controller;
 
+import com.example.pizza_backend.api.dto.CategoryDto;
 import com.example.pizza_backend.api.dto.ProductDto;
 import com.example.pizza_backend.api.dto.RecommendedProductDto;
 import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
+import com.example.pizza_backend.service.CategoryService;
 import com.example.pizza_backend.service.ProductService;
 import com.example.pizza_backend.service.RecommendedService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,10 +27,12 @@ public class ProductController {
 
     private final ProductService productService;
     private final RecommendedService recommendedService;
+    private final CategoryService categoryService;
     @Autowired
-    public ProductController(ProductService productService, RecommendedService recommendedService) {
+    public ProductController(ProductService productService, RecommendedService recommendedService, CategoryService categoryService) {
         this.productService = productService;
         this.recommendedService = recommendedService;
+        this.categoryService = categoryService;
     }
 
 
@@ -36,12 +40,14 @@ public class ProductController {
     public ResponseEntity<Map<String, Object>> getAllProducts(@ModelAttribute ProductSearchReq productSearchReq) {
         List<ProductDto> products = productService.getAllProducts(productSearchReq);
         List<RecommendedProductDto> rec = recommendedService.getAllRecommendedProducts();
+        List<CategoryDto> categories = categoryService.getAllCategories();
         List<Long> productIds = rec.stream()
                 .map(RecommendedProductDto::getProductId)
                 .toList();
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("products", products);
         response.put("recommendProductId", productIds);
+        response.put("categoriesDropdown", categories);
         return ResponseEntity.ok(response);
     }
     @PostMapping("/create")
