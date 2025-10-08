@@ -3,22 +3,17 @@ package com.example.pizza_backend.api.controller;
 
 import com.example.pizza_backend.api.dto.CartDto;
 import com.example.pizza_backend.api.dto.CartItemDto;
-import com.example.pizza_backend.api.dto.ProductDto;
 import com.example.pizza_backend.api.dto.input.CartItemInput;
-import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.CartItemService;
 import com.example.pizza_backend.service.CartService;
-import com.example.pizza_backend.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cart")

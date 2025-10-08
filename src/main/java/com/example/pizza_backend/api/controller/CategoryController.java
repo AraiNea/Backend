@@ -7,6 +7,7 @@ import com.example.pizza_backend.api.dto.search.CategorySearchReq;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.CategoryService;
 import com.example.pizza_backend.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,6 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/category")
@@ -58,11 +58,10 @@ public class CategoryController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(
-//                                            HttpServletRequest request,
+            HttpServletRequest request,
             @RequestPart("category") CategoryInput categoryInput,
             @RequestPart("image") MultipartFile imageFile) throws IOException {
-//        String usersame = (String) request.getAttribute("username");
-        String username="temp";
+        String username = (String) request.getAttribute("username");
         String createLog = categoryService.createCategory(categoryInput, imageFile, username);
         if (createLog == "success") {
             return  ResponseEntity.ok()
@@ -73,11 +72,10 @@ public class CategoryController {
 
     @PostMapping("/update")
     public ResponseEntity<?> updateProduct(
-//                                            HttpServletRequest request,
+            HttpServletRequest request,
             @RequestPart(value = "category") CategoryInput categoryInput,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
-//        String usersame = (String) request.getAttribute("username");
-        String username="temp";
+        String username = (String) request.getAttribute("username");
         String createLog="";
         if (imageFile != null && !imageFile.isEmpty()) {
             // ถ้ามีการส่งไฟล์มา, ให้ update ไฟล์ภาพ
@@ -96,9 +94,7 @@ public class CategoryController {
 
     @PostMapping("/delete")
     public ResponseEntity<?> deleteProduct(
-//          HttpServletRequest request,
             @RequestBody CategoryInput categoryInput) throws IOException {
-        System.out.println(categoryInput);
         String createLog= categoryService.deleteCategory(categoryInput);
         if (createLog == "success") {
             return  ResponseEntity.ok()

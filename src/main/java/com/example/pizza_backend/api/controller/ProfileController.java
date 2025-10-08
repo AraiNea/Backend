@@ -3,7 +3,6 @@ package com.example.pizza_backend.api.controller;
 
 import com.example.pizza_backend.api.dto.ProfileDto;
 import com.example.pizza_backend.api.dto.input.LoginInput;
-import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.input.ProfileInput;
 import com.example.pizza_backend.persistence.entity.Profile;
 import com.example.pizza_backend.service.JwtService;
@@ -14,9 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
