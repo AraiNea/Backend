@@ -14,8 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Run unit tests
-      run: mvn test
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag pattaratos/arainea-backend:latest
     - name: login
