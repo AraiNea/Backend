@@ -78,7 +78,7 @@ class HomeControllerTest {
                 .andExpect(jsonPath("$.results[1].category.categoryName").value("Drinks"))
                 .andExpect(jsonPath("$.results[1].products[0].productName").value("Coke"))
                 .andExpect(jsonPath("$.recommendedProducts[0].productId").value("100"))
-                .andExpect(jsonPath("$.recommendedProducts[0].recommendedImg").value("img1.jpg"));
+                .andExpect(jsonPath("$.recommendedProducts[0].recommendImgPath").value("img1.jpg"));
     }
 
     @Test
