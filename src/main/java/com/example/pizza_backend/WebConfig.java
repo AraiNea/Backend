@@ -33,10 +33,12 @@ public class WebConfig {
                         .addPathPatterns("/cart/**","/order/**","/address/**","/profile/update","/profile/list")         // ตรวจเฉพาะ path นี้
                         .excludePathPatterns("/login/**");    // ยกเว้น path นี้
                 registry.addInterceptor(adminInterceptor)
-                        .addPathPatterns("/admin/**","/product/**"
+                        .addPathPatterns("/admin/**","/product/**","order/**","/category/**","/recommend/**"
 //                                ,"/product/create","product/update","product/delete"
                         )
-                        .excludePathPatterns("/product/list");
+                        .excludePathPatterns("/product/list",
+                                "/order/list","/order/",
+                                "/category/list","/category/");
             }
 
             // ✅ CORS สำหรับอนุญาต cross-origin (เช่น React ที่ 5173)
