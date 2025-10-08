@@ -7,6 +7,7 @@ import java.time.LocalDate;
 @Data
 public class ProfileInput {
     //Profile
+    private Long profileId;
     private String username;
     private String password;
     private String profileName;

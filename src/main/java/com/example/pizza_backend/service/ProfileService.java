@@ -10,4 +10,5 @@ public interface ProfileService {
     Boolean checkDuplicateProfile(ProfileInput req);
     Optional<Profile> checkLogIn(LoginInput req);
     String createProfileWithAddress(ProfileInput req, Integer role);
+    String updateProfile(ProfileInput req, Long profileId);
 }

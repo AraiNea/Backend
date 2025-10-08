@@ -62,6 +62,12 @@ public interface Mapper {
     @Mapping(target = "cart", ignore = true)
     void updateCartItemFromInput(CartItemInput cartItemInput, @MappingTarget CartItem cartItem);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "profileId", ignore = true)
+    @Mapping(target = "address", ignore = true)
+    @Mapping(target = "cart", ignore = true)
+    @Mapping(target = "orders", ignore = true)
+    void updateProfileFromInput(ProfileInput profileInput, @MappingTarget Profile profile);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "category", ignore = true)     // handle manually

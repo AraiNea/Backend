@@ -1,9 +1,11 @@
 package com.example.pizza_backend.api.controller;
 
 import com.example.pizza_backend.api.dto.ProductDto;
+import com.example.pizza_backend.api.dto.RecommendedProductDto;
 import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.service.ProductService;
+import com.example.pizza_backend.service.RecommendedService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,26 +24,32 @@ import java.util.Map;
 public class ProductController {
 
     private final ProductService productService;
+    private final RecommendedService recommendedService;
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, RecommendedService recommendedService) {
         this.productService = productService;
+        this.recommendedService = recommendedService;
     }
 
 
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getAllProducts(@ModelAttribute ProductSearchReq productSearchReq) {
         List<ProductDto> products = productService.getAllProducts(productSearchReq);
+        List<RecommendedProductDto> rec = recommendedService.getAllRecommendedProducts();
+        List<Long> productIds = rec.stream()
+                .map(RecommendedProductDto::getProductId)
+                .toList();
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("products", products);
+        response.put("recommendProductId", productIds);
         return ResponseEntity.ok(response);
     }
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(
-//                                            HttpServletRequest request,
+                                            HttpServletRequest request,
                                            @RequestPart("product") ProductInput productInput,
                                            @RequestPart("image") MultipartFile imageFile) throws IOException {
-//        String usersame = (String) request.getAttribute("username");
-        String username="temp";
+        String username = (String) request.getAttribute("username");
         String createLog = productService.createProduct(productInput, imageFile, username);
         if (createLog == "success") {
             return  ResponseEntity.ok()
@@ -52,11 +60,10 @@ public class ProductController {
 
     @PostMapping("/update")
     public ResponseEntity<?> updateProduct(
-//                                            HttpServletRequest request,
+            HttpServletRequest request,
             @RequestPart("product") ProductInput productInput,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
-//        String usersame = (String) request.getAttribute("username");
-        String username="temp";
+        String username = (String) request.getAttribute("username");
         String createLog="";
         if (imageFile != null && !imageFile.isEmpty()) {
             // ถ้ามีการส่งไฟล์มา, ให้ update ไฟล์ภาพ
@@ -75,7 +82,6 @@ public class ProductController {
 
     @PostMapping("/delete")
     public ResponseEntity<?> deleteProduct(
-//          HttpServletRequest request,
             @RequestBody ProductInput productInput) throws IOException {
         System.out.println(productInput);
         String createLog= productService.deleteProduct(productInput);

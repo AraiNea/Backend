@@ -30,12 +30,13 @@ public class WebConfig {
             @Override
             public void addInterceptors(@NonNull InterceptorRegistry registry) {
                 registry.addInterceptor(authInterceptor)
-                        .addPathPatterns("/cart/**","/order/**","/address/**")         // ตรวจเฉพาะ path นี้
+                        .addPathPatterns("/cart/**","/order/**","/address/**","/profile/update")         // ตรวจเฉพาะ path นี้
                         .excludePathPatterns("/login/**");    // ยกเว้น path นี้
                 registry.addInterceptor(adminInterceptor)
-                        .addPathPatterns("/admin/**"
+                        .addPathPatterns("/admin/**","/product/**"
 //                                ,"/product/create","product/update","product/delete"
-                        );
+                        )
+                        .excludePathPatterns("/product/list");
             }
 
             // ✅ CORS สำหรับอนุญาต cross-origin (เช่น React ที่ 5173)

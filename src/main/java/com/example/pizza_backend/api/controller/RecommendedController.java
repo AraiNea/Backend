@@ -27,13 +27,13 @@ public class RecommendedController {
         this.recommendedService = recommendedService;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<Map<String, Object>> getAllRecommended() {
-        List<RecommendedProductDto> rec = recommendedService.getAllRecommendedProducts();
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("recommended", rec);
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("/list")
+//    public ResponseEntity<Map<String, Object>> getAllRecommended() {
+//        List<RecommendedProductDto> rec = recommendedService.getAllRecommendedProducts();
+//        Map<String, Object> response = new LinkedHashMap<>();
+//        response.put("recommended", rec);
+//        return ResponseEntity.ok(response);
+//    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createRecommended(

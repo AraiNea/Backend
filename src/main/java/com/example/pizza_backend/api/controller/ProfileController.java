@@ -2,16 +2,20 @@ package com.example.pizza_backend.api.controller;
 
 
 import com.example.pizza_backend.api.dto.input.LoginInput;
+import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.input.ProfileInput;
 import com.example.pizza_backend.persistence.entity.Profile;
 import com.example.pizza_backend.service.JwtService;
 import com.example.pizza_backend.service.ProfileService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
@@ -110,5 +114,19 @@ public class ProfileController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(Map.of("message", "log out success"));
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateProfile(
+            HttpServletRequest request,
+            @RequestBody ProfileInput profileInput){
+        Long profileId = (Long) request.getAttribute("profile_id");
+        System.out.println("profileId: " + profileId);
+        String createLog = profileService.updateProfile(profileInput,profileId);
+        if (createLog == "success") {
+            return  ResponseEntity.ok()
+                    .body(Map.of("message", "update success"));
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

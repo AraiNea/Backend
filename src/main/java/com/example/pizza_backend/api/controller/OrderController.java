@@ -4,6 +4,7 @@ package com.example.pizza_backend.api.controller;
 import com.example.pizza_backend.api.dto.*;
 import com.example.pizza_backend.api.dto.input.OrderAndItemInput;
 import com.example.pizza_backend.api.dto.input.OrderInput;
+import com.example.pizza_backend.api.dto.search.OrderSearchReq;
 import com.example.pizza_backend.service.CartItemService;
 import com.example.pizza_backend.service.OrderItemService;
 import com.example.pizza_backend.service.OrderService;
@@ -38,6 +39,26 @@ public class OrderController {
         Long profileId = (Long) request.getAttribute("profile_id");
 
         List<OrderDto> orders = orderService.getOrdersByProfileId(profileId);
+
+        List<Map<String, Object>> results = new ArrayList<>();
+        for (OrderDto order : orders) {
+            Map<String, Object> data = Map.of(
+                    "order", order,
+                    "orderItems", orderItemService.getOrderItems(order.getOrderId())
+            );
+            results.add(data);
+        }
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("results", results);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllOrders(OrderSearchReq req) {
+
+        List<OrderDto> orders = orderService.getAllOrders(req);
 
         List<Map<String, Object>> results = new ArrayList<>();
         for (OrderDto order : orders) {

@@ -3,6 +3,7 @@ package com.example.pizza_backend.service.impl;
 import com.example.pizza_backend.api.dto.input.LoginInput;
 import com.example.pizza_backend.api.dto.input.ProfileInput;
 import com.example.pizza_backend.api.mapper.Mapper;
+import com.example.pizza_backend.exception.IdNotFoundException;
 import com.example.pizza_backend.persistence.entity.Address;
 import com.example.pizza_backend.persistence.entity.Cart;
 import com.example.pizza_backend.persistence.entity.Profile;
@@ -93,5 +94,14 @@ public class ProfileServiceImpl implements ProfileService {
                 "profile_role", user.getProfileRole()
         ));
         return token;
+    }
+
+    @Override
+    public String updateProfile(ProfileInput req, Long profileId) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new IdNotFoundException("Profile Not Found"));
+        mapper.updateProfileFromInput(req, profile);
+        profileRepository.save(profile);
+        return "success";
     }
 }

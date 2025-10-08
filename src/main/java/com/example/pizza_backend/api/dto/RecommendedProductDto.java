@@ -10,7 +10,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RecommendedProductDto {
     private Long recommendedId;
-    private String productId;
+    private Long productId;
     private String recommendedImg;
     private Integer priority;
 }

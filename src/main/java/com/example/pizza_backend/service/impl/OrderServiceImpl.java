@@ -4,6 +4,7 @@ import com.example.pizza_backend.api.dto.OrderDto;
 import com.example.pizza_backend.api.dto.input.CartItemInput;
 import com.example.pizza_backend.api.dto.input.OrderAndItemInput;
 import com.example.pizza_backend.api.dto.input.OrderInput;
+import com.example.pizza_backend.api.dto.search.OrderSearchReq;
 import com.example.pizza_backend.api.mapper.Mapper;
 import com.example.pizza_backend.exception.IdNotFoundException;
 import com.example.pizza_backend.persistence.entity.Address;
@@ -43,6 +44,14 @@ public class OrderServiceImpl implements OrderService {
     }
     public List<OrderDto> getOrdersByProfileId(Long profileId) {
         List<Orders> orders = orderRepository.getOrdersByProfileProfileId(profileId);
+        return orders.stream()
+                .map(order -> mapper.toOrderDto(order))
+                .toList();
+    }
+
+    @Override
+    public List<OrderDto> getAllOrders(OrderSearchReq req) {
+        List<Orders> orders = orderRepository.searchOrder(req.getOrderId());
         return orders.stream()
                 .map(order -> mapper.toOrderDto(order))
                 .toList();
