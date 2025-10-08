@@ -12,14 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class HomeControllerTest {
 
@@ -35,105 +36,82 @@ class HomeControllerTest {
     @InjectMocks
     private HomeController homeController;
 
+    private MockMvc mockMvc;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(homeController).build();
     }
 
     @Test
-    void getHomeInfo_shouldReturnCategoriesProductsAndRecommendations_withAllFields() {
-        ProductSearchReq req = new ProductSearchReq();
+    void testGetHomeInfo_success() throws Exception {
+        // Mock CategoryDto
+        CategoryDto cat1 = CategoryDto.builder().categoryId(1L).categoryName("Pizza").build();
+        CategoryDto cat2 = CategoryDto.builder().categoryId(2L).categoryName("Drinks").build();
+        List<CategoryDto> categories = List.of(cat1, cat2);
 
-        // 🔹 Mock CategoryDto
-        CategoryDto category1 = mock(CategoryDto.class);
-        when(category1.getCategoryName()).thenReturn("Pizza");
-        when(category1.getCategoryId()).thenReturn(1L);
+        // Mock ProductDto
+        ProductDto prod1 = ProductDto.builder().productId(100L).productName("Margherita").categoryId(1L).build();
+        ProductDto prod2 = ProductDto.builder().productId(101L).productName("Coke").categoryId(2L).build();
+        List<ProductDto> products = List.of(prod1, prod2);
 
-        // 🔹 Mock ProductDto
-        ProductDto product1 = mock(ProductDto.class);
-        when(product1.getProductName()).thenReturn("Hawaiian");
-        when(product1.getCategoryId()).thenReturn(1L);
+        // Mock RecommendedProductDto
+        RecommendedProductDto rec1 = RecommendedProductDto.builder()
+                .recommendedId(1L)
+                .productId(Long.valueOf("100"))
+                .recommendedImg("img1.jpg")
+                .priority(1)
+                .build();
+        List<RecommendedProductDto> recommended = List.of(rec1);
 
-        // 🔹 Mock RecommendedProductDto พร้อม field ทุกตัว
-        RecommendedProductDto rec1 = mock(RecommendedProductDto.class);
-        when(rec1.getRecommendedId()).thenReturn(500L);
-        when(rec1.getProductId()).thenReturn("P101");
-        when(rec1.getRecommendedImg()).thenReturn("pepperoni.png");
-        //JOMJAI DELETE THIS LINE BELOW
-        // when(rec1.getRecProductPath()).thenReturn("/recommended/pepperoni");
-//        when(rec1.getPriority()).thenReturn(1);
+        // Mock service calls
+        when(categoryService.getAllCategories()).thenReturn(categories);
+        when(productService.getAllProducts(any(ProductSearchReq.class))).thenReturn(products);
+        when(recommendedService.getAllRecommendedProducts()).thenReturn(recommended);
 
-        // 🔹 Mock service responses
-        when(categoryService.getAllCategories()).thenReturn(List.of(category1));
-        when(productService.getAllProducts(req)).thenReturn(List.of(product1));
-        when(recommendedService.getAllRecommendedProducts()).thenReturn(List.of(rec1));
-
-        // Act
-        ResponseEntity<Map<String, Object>> response = homeController.getHomeInfo(req);
-
-        // Assert
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-
-        Map<String, Object> body = response.getBody();
-        assertThat(body).isNotNull();
-        assertThat(body).containsKeys("results", "recommendedProducts");
-
-        // 🔹 ตรวจสอบ category
-        List<Map<String, Object>> results = (List<Map<String, Object>>) body.get("results");
-        List<CategoryDto> categoriesFromResult = results.stream()
-                .map(r -> (CategoryDto) r.get("category"))
-                .toList();
-        assertThat(categoriesFromResult)
-                .extracting(CategoryDto::getCategoryName)
-                .contains("Pizza");
-
-        // 🔹 ตรวจสอบ product
-        List<ProductDto> products = (List<ProductDto>) results.get(0).get("products");
-        assertThat(products)
-                .extracting(ProductDto::getProductName)
-                .contains("Hawaiian");
-
-        // 🔹 ตรวจสอบ recommendedProducts พร้อมทุก field
-        List<RecommendedProductDto> recommends = (List<RecommendedProductDto>) body.get("recommendedProducts");
-        assertThat(recommends)
-                .extracting(RecommendedProductDto::getRecommendedId)
-                .contains(500L);
-
-        assertThat(recommends)
-                .extracting(RecommendedProductDto::getProductId)
-                .contains("P101");
-
-        assertThat(recommends)
-                .extracting(RecommendedProductDto::getRecommendedImg)
-                .contains("pepperoni.png");
-
-        //JOMJAI DELETE THIS LINE BELOW
-//        assertThat(recommends)
-//                .extracting(RecommendedProductDto::getRecProductPath)
-//                .contains("/recommended/pepperoni");
-//        assertThat(recommends)
-//                .extracting(RecommendedProductDto::getPriority)
-//                .contains(1);
+        mockMvc.perform(get("/home/")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results").isArray())
+                .andExpect(jsonPath("$.results[0].category.categoryName").value("Pizza"))
+                .andExpect(jsonPath("$.results[0].products[0].productName").value("Margherita"))
+                .andExpect(jsonPath("$.results[1].category.categoryName").value("Drinks"))
+                .andExpect(jsonPath("$.results[1].products[0].productName").value("Coke"))
+                .andExpect(jsonPath("$.recommendedProducts[0].productId").value("100"))
+                .andExpect(jsonPath("$.recommendedProducts[0].recommendedImg").value("img1.jpg"));
     }
 
     @Test
-    void getHomeInfo_shouldHandleEmptyLists() {
-        ProductSearchReq req = new ProductSearchReq();
+    void testGetHomeInfo_noProducts() throws Exception {
+        // Mock categories only, no products
+        CategoryDto cat1 = CategoryDto.builder().categoryId(1L).categoryName("Pizza").build();
+        List<CategoryDto> categories = List.of(cat1);
 
-        // Mock services คืน empty list
-        when(categoryService.getAllCategories()).thenReturn(List.of());
-        when(productService.getAllProducts(req)).thenReturn(List.of());
+        when(categoryService.getAllCategories()).thenReturn(categories);
+        when(productService.getAllProducts(any(ProductSearchReq.class))).thenReturn(List.of());
         when(recommendedService.getAllRecommendedProducts()).thenReturn(List.of());
 
-        // Act
-        ResponseEntity<Map<String, Object>> response = homeController.getHomeInfo(req);
+        mockMvc.perform(get("/home/")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results").isArray())
+                .andExpect(jsonPath("$.results[0].category.categoryName").value("Pizza"))
+                .andExpect(jsonPath("$.results[0].products").isEmpty())
+                .andExpect(jsonPath("$.recommendedProducts").isEmpty());
+    }
 
-        // Assert
-        Map<String, Object> body = response.getBody();
-        assertThat(body).isNotNull();
-        assertThat(body).containsKeys("results", "recommendedProducts");
+    @Test
+    void testGetHomeInfo_noCategories() throws Exception {
+        // No categories, products or recommended
+        when(categoryService.getAllCategories()).thenReturn(List.of());
+        when(productService.getAllProducts(any(ProductSearchReq.class))).thenReturn(List.of());
+        when(recommendedService.getAllRecommendedProducts()).thenReturn(List.of());
 
-        assertThat((List<?>) body.get("results")).isEmpty();
-        assertThat((List<?>) body.get("recommendedProducts")).isEmpty();
+        mockMvc.perform(get("/home/")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results").isEmpty())
+                .andExpect(jsonPath("$.recommendedProducts").isEmpty());
     }
 }
