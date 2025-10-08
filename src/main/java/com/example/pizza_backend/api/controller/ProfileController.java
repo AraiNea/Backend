@@ -1,6 +1,7 @@
 package com.example.pizza_backend.api.controller;
 
 
+import com.example.pizza_backend.api.dto.ProfileDto;
 import com.example.pizza_backend.api.dto.input.LoginInput;
 import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.input.ProfileInput;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -121,12 +123,21 @@ public class ProfileController {
             HttpServletRequest request,
             @RequestBody ProfileInput profileInput){
         Long profileId = (Long) request.getAttribute("profile_id");
-        System.out.println("profileId: " + profileId);
         String createLog = profileService.updateProfile(profileInput,profileId);
         if (createLog == "success") {
             return  ResponseEntity.ok()
                     .body(Map.of("message", "update success"));
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getProfile(HttpServletRequest request){
+        Long profileId = (Long) request.getAttribute("profile_id");
+        ProfileDto profile = profileService.getProfileById(profileId);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("profile", profile);
+
+        return ResponseEntity.ok(response);
     }
 }

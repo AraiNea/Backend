@@ -1,5 +1,6 @@
 package com.example.pizza_backend.service;
 
+import com.example.pizza_backend.api.dto.ProfileDto;
 import com.example.pizza_backend.api.dto.input.LoginInput;
 import com.example.pizza_backend.api.dto.input.ProfileInput;
 import com.example.pizza_backend.persistence.entity.Profile;
@@ -11,4 +12,5 @@ public interface ProfileService {
     Optional<Profile> checkLogIn(LoginInput req);
     String createProfileWithAddress(ProfileInput req, Integer role);
     String updateProfile(ProfileInput req, Long profileId);
+    ProfileDto getProfileById(Long profileId);
 }

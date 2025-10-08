@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class OrderSearchReq {
     private Long orderId;
+    private Integer status;
 }

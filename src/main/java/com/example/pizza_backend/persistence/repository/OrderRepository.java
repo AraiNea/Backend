@@ -17,6 +17,7 @@ public interface OrderRepository extends JpaRepository<Orders,Long> {
         FROM Orders o
         WHERE 1=1
           AND (:orderId IS NULL OR o.orderId = :orderId)
+          AND (:status IS NULL OR o.status = :status)
     """)
-    List<Orders> searchOrder(@Param("orderId") Long orderId);
+    List<Orders> searchOrder(@Param("orderId") Long orderId,  @Param("status") Integer status);
 }

@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getAllOrders(OrderSearchReq req) {
-        List<Orders> orders = orderRepository.searchOrder(req.getOrderId());
+        List<Orders> orders = orderRepository.searchOrder(req.getOrderId(), req.getStatus());
         return orders.stream()
                 .map(order -> mapper.toOrderDto(order))
                 .toList();

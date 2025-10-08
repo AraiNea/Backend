@@ -126,5 +126,7 @@ public interface Mapper {
 
     @Mapping(source = "product.productId", target = "productId")
     RecommendedProductDto toRecommendedProductDto(RecommendedProduct recommendedProduct);
+
+    ProfileDto toProfileDto(Profile profile);
 }
 
