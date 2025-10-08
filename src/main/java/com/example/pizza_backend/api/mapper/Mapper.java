@@ -113,6 +113,7 @@ public interface Mapper {
     @Mapping(source = "product.productPrice", target = "productPrice")
     CartItemDto toCartItemDto(CartItem cartItem);
 
+    @Mapping(source = "categoryImgPath", target = "categoryImgPath")
     CategoryDto toCategoryDto(Category category);
 
     OrderItemDto toOrderItemDto(OrderItem orderItem);
@@ -122,9 +123,11 @@ public interface Mapper {
 
     @Mapping(source = "category.categoryId", target = "categoryId")
     @Mapping(source = "category.categoryName", target = "categoryName")
+    @Mapping(source = "productImgPath", target = "productImgPath")
     ProductDto toProductDto(Product product);
 
     @Mapping(source = "product.productId", target = "productId")
+    @Mapping(source = "recommendImgPath", target = "recommendImgPath")
     RecommendedProductDto toRecommendedProductDto(RecommendedProduct recommendedProduct);
 
     ProfileDto toProfileDto(Profile profile);

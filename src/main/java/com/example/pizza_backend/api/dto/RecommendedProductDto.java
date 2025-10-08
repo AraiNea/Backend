@@ -11,6 +11,5 @@ import lombok.Data;
 public class RecommendedProductDto {
     private Long recommendedId;
     private Long productId;
-    private String recommendedImg;
-    private Integer priority;
+    private String recommendImgPath;
 }

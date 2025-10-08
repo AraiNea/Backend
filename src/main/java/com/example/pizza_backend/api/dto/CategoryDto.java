@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class CategoryDto {
     private Long categoryId;
     private String categoryName;
-    private String categoryImg;
+    private String categoryImgPath;
     private String categoryProductPath;
     private Long categoryPriority;
 }
