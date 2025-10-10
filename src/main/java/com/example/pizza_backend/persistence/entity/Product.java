@@ -36,6 +36,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecommendedProduct> recommendedProducts;
+
     @Transient
     public String getProductImgPath(){
         if (productImg == null) return null;
