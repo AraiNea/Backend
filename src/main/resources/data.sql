@@ -82,7 +82,7 @@ SELECT c.category_id, 'Lemon Tea', 'Sweet lemon iced tea 500ml', 'lemon_tea.png'
 FROM category c WHERE c.category_name = 'drink';
 
 INSERT INTO product (category_id, product_name, product_detail, product_img, product_price, product_stock, is_active, created_at, created_by, updated_at, updated_by)
-SELECT c.category_id, 'Water', 'Drinking water 600ml', 'water.png', 20, 7, 1, NOW() - INTERVAL '4 days', 'system', NULL, NULL
+SELECT c.category_id, 'Water', 'Drinking water 600ml', 'water.png', 20, 0, 1, NOW() - INTERVAL '4 days', 'system', NULL, NULL
 FROM category c WHERE c.category_name = 'drink';
 
 

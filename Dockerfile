@@ -14,6 +14,7 @@ WORKDIR /app
 
 # คัดลอก jar ที่ build ได้มา ไม่ต้อง fix ชื่อ
 COPY --from=builder /app/target/*.jar app.jar
+COPY Images /app/Images
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
