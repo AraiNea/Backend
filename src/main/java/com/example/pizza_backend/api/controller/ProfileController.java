@@ -31,6 +31,24 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getMe(HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
+        Number roleNum = (Number) request.getAttribute("profile_role");
+        Number idNum = (Number) request.getAttribute("profile_id");
+
+        Integer role = roleNum != null ? roleNum.intValue() : null;
+        Long id = idNum != null ? idNum.longValue() : null;
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("username", username);
+        response.put("role", role);
+        response.put("id", id);
+
+        return ResponseEntity.ok(response);
+
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> signIn(@RequestBody LoginInput req) {
 
@@ -43,7 +61,7 @@ public class ProfileController {
         //เตรียม payload
         Map<String, Object> payload = Map.of(
                 "profile_id", user.getProfileId(),
-                "username", user.getProfileName(),
+                "username", user.getUsername(),
                 "profile_role", user.getProfileRole()
         );
         //สร้าง token
