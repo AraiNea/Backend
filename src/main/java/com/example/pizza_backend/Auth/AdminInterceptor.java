@@ -1,6 +1,7 @@
 package com.example.pizza_backend.Auth;
 
 
+import com.example.pizza_backend.exception.UnauthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.micrometer.common.lang.NonNull;
@@ -20,11 +21,13 @@ public class AdminInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         try {
+            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                return true;
+            }
             // 1. หา cookie ชื่อ tokenpizza
             Cookie[] cookies = request.getCookies();
             if (cookies == null || cookies.length == 0) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No cookies found");
-                return false;
+                throw new UnauthorizedException("No cookies found");
             }
 
             String token = null;
@@ -36,8 +39,7 @@ public class AdminInterceptor implements HandlerInterceptor {
             }
 
             if (token == null) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No token found");
-                return false;
+                throw new UnauthorizedException("No tokenpizza found");
             }
 
             // 2. ถอด JWT ด้วย secret
@@ -52,7 +54,6 @@ public class AdminInterceptor implements HandlerInterceptor {
             if (role != null && role == 2) {
                 return true; // ✅ ผ่าน
             }
-
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not admin");
             return false;
 

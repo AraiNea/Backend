@@ -22,8 +22,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         try {
+            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                return true;
+            }
             // 1. ดึง cookie ทั้งหมด
-            System.out.println("AuthInterceptor preHandle");
             Cookie[] cookies = request.getCookies();
             if (cookies == null || cookies.length == 0) {
                 throw new UnauthorizedException("No cookies found");
@@ -32,7 +34,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             // 2. หา cookie ที่ชื่อว่า "tokenpizza"
             String token = null;
             for (Cookie cookie : cookies) {
-                System.out.println("🍪 Cookie: " + cookie.getName() + " = " + cookie.getValue());
                 if ("tokenpizza".equals(cookie.getName())) {
                     token = cookie.getValue();
                     break;
