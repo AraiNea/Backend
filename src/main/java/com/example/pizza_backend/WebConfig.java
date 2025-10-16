@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig {
+public class WebConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
     private final AdminInterceptor adminInterceptor;
@@ -23,33 +23,26 @@ public class WebConfig {
         this.adminInterceptor = adminInterceptor;
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            // ✅ Interceptor สำหรับตรวจ JWT
-            @Override
-            public void addInterceptors(@NonNull InterceptorRegistry registry) {
-                registry.addInterceptor(authInterceptor)
-                        .addPathPatterns("/cart/**","/order/**","/address/**","/profile/update","/profile/list","/profile/me")         // ตรวจเฉพาะ path นี้
-                        .excludePathPatterns("/login/**");    // ยกเว้น path นี้
-                registry.addInterceptor(adminInterceptor)
-                        .addPathPatterns("/admin/**","/product/**","order/**","/category/**","/recommend/**"
-//                                ,"/product/create","product/update","product/delete"
-                        )
-                        .excludePathPatterns("/product/list",
-                                "/order/list","/order/",
-                                "/category/list","/category/");
-            }
+    // ✅ Interceptor
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns("/cart/**", "/order/**", "/address/**", "/profile/update", "/profile/list", "/profile/me")
+                .excludePathPatterns("/login/**");
 
-            // ✅ CORS สำหรับอนุญาต cross-origin (เช่น React ที่ 5173)
-            @Override
-            public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true); // ถ้าจะส่ง cookie ไปกลับ
-            }
-        };
+        registry.addInterceptor(adminInterceptor)
+                .addPathPatterns("/admin/**", "/product/**", "/order/**", "/category/**", "/recommend/**")
+                .excludePathPatterns("/product/list", "/order/list", "/category/list", "/category/");
+    }
+
+    // ✅ CORS (อย่าใส่ใน @Bean)
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }
+
