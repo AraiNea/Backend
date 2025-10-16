@@ -176,7 +176,7 @@ SELECT pr.product_id, 'BBQ_Smoked.png'
 FROM product pr WHERE pr.product_name = 'BBQ Smoked';
 
 INSERT INTO recommended_product (product_id, recommended_img)
-SELECT pr.product_id, 'Double_Pepperoni.png'
+SELECT pr.product_id, 'lemon_tea.png'
 FROM product pr WHERE pr.product_name = 'Lemon Tea';
 
 COMMIT;
