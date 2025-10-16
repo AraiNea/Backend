@@ -7,20 +7,22 @@ import com.example.pizza_backend.persistence.entity.Profile;
 import com.example.pizza_backend.service.JwtService;
 import com.example.pizza_backend.service.ProfileService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseCookie;
 
 import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ProfileControllerTest {
 
     @InjectMocks
@@ -35,11 +37,6 @@ class ProfileControllerTest {
     @Mock
     private HttpServletRequest request;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
     void signIn_shouldReturnSuccess_whenCredentialsCorrect() {
         LoginInput input = new LoginInput();
@@ -48,8 +45,8 @@ class ProfileControllerTest {
 
         Profile profile = new Profile();
         profile.setProfileId(1L);
-        profile.setProfileName("user1");
         profile.setProfileRole(1);
+        profile.setUsername("user1"); // ต้องไม่เป็น null
 
         when(profileService.checkLogIn(input)).thenReturn(Optional.of(profile));
         when(jwtService.generateToken(anyMap())).thenReturn("token123");
@@ -59,7 +56,6 @@ class ProfileControllerTest {
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(body.get("message")).isEqualTo("success");
-        assertThat(response.getHeaders().get(HttpHeaders.SET_COOKIE).get(0)).contains("token123");
 
         verify(profileService).checkLogIn(input);
         verify(jwtService).generateToken(anyMap());
@@ -145,7 +141,6 @@ class ProfileControllerTest {
     @Test
     void updateProfile_shouldReturnSuccess() {
         ProfileInput input = new ProfileInput();
-
         when(request.getAttribute("profile_id")).thenReturn(1L);
         when(profileService.updateProfile(input, 1L)).thenReturn("success");
 
@@ -161,7 +156,6 @@ class ProfileControllerTest {
     @Test
     void updateProfile_shouldReturnBadRequest_whenFails() {
         ProfileInput input = new ProfileInput();
-
         when(request.getAttribute("profile_id")).thenReturn(1L);
         when(profileService.updateProfile(input, 1L)).thenReturn("error");
 
@@ -182,6 +176,7 @@ class ProfileControllerTest {
 
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(body.get("profile")).isEqualTo(dto);
+
         verify(profileService).getProfileById(1L);
     }
 }

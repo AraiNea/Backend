@@ -12,11 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -52,27 +52,63 @@ class ProductControllerTest {
     void getAllProducts_shouldReturnProductsAndCategories() {
         ProductSearchReq searchReq = new ProductSearchReq();
 
-        ProductDto product1 = mock(ProductDto.class);
+        // สร้าง ProductDto ด้วย builder (ยังทำได้)
+        ProductDto product1 = ProductDto.builder()
+                .categoryId(1L)
+                .categoryName("Pizza")
+                .productId(101L)
+                .productName("Margherita")
+                .productDetail("Cheese pizza")
+                .productPrice(250)
+                .productStock(10)
+                .productImgPath("/images/margherita.png")
+                .isActive(1)
+                .createdAt(LocalDate.now())
+                .createdBy("admin")
+                .build();
+
+        // mock RecommendedProductDto
         RecommendedProductDto rec1 = mock(RecommendedProductDto.class);
         when(rec1.getProductId()).thenReturn(101L);
-        CategoryDto category1 = mock(CategoryDto.class);
 
+        // mock CategoryDto
+        CategoryDto category1 = mock(CategoryDto.class);
+        when(category1.getCategoryId()).thenReturn(1L);
+        when(category1.getCategoryName()).thenReturn("Pizza");
+
+        // mock service
         when(productService.getAllProducts(searchReq)).thenReturn(List.of(product1));
         when(recommendedService.getAllRecommendedProducts()).thenReturn(List.of(rec1));
         when(categoryService.getAllCategories()).thenReturn(List.of(category1));
 
+        // เรียก controller
         ResponseEntity<Map<String, Object>> response = productController.getAllProducts(searchReq);
         Map<String, Object> body = response.getBody();
 
+        // assert
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(body.get("products")).isEqualTo(List.of(product1));
-        assertThat(body.get("recommendProductId")).isEqualTo(List.of(101L));
-        assertThat(body.get("categoriesDropdown")).isEqualTo(List.of(category1));
 
+        // แปลง recommendedProductDto เป็น list ของ productId ก่อน assert
+        List<Long> recommendedIds = List.of(101L);
+        List<Long> actualIds = ((List<RecommendedProductDto>) body.get("recommendProductId")).stream()
+                .map(RecommendedProductDto::getProductId)
+                .toList();
+        assertThat(actualIds).isEqualTo(recommendedIds);
+
+        // แปลง categoryDto เป็น list ของ categoryId ก่อน assert (ตัวอย่างง่าย ๆ)
+        List<Long> expectedCategoryIds = List.of(1L);
+        List<Long> actualCategoryIds = ((List<CategoryDto>) body.get("categoriesDropdown")).stream()
+                .map(CategoryDto::getCategoryId)
+                .toList();
+        assertThat(actualCategoryIds).isEqualTo(expectedCategoryIds);
+
+        // verify ว่า service ถูกเรียก
         verify(productService).getAllProducts(searchReq);
         verify(recommendedService).getAllRecommendedProducts();
         verify(categoryService).getAllCategories();
     }
+
 
     @Test
     void createProduct_shouldReturnSuccess() throws IOException {
@@ -125,9 +161,14 @@ class ProductControllerTest {
         when(request.getAttribute("username")).thenReturn("admin");
         ProductInput input = new ProductInput();
 
-        // imageFile เป็น null
+        when(productService.updateProduct(input, null, "admin")).thenReturn("success");
+
         ResponseEntity<?> response = productController.updateProduct(request, input, null);
-        // mock service
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(body.get("message")).isEqualTo("update success");
+
         verify(productService).updateProduct(input, null, "admin");
     }
 

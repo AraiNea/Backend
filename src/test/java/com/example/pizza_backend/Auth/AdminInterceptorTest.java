@@ -48,22 +48,26 @@ class AdminInterceptorTest {
     }
 
     @Test
-    void testNoCookies() throws Exception {
+    void testNoCookies() {
         when(request.getCookies()).thenReturn(null);
 
-        boolean result = interceptor.preHandle(request, response, new Object());
-        verify(response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No cookies found");
-        assertThat(result).isFalse();
+        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
+            interceptor.preHandle(request, response, new Object());
+        });
+
+        assertThat(ex.getMessage()).isEqualTo("No cookies found");
     }
 
     @Test
-    void testNoTokenCookie() throws Exception {
+    void testNoTokenCookie() {
         Cookie[] cookies = {new Cookie("other", "value")};
         when(request.getCookies()).thenReturn(cookies);
 
-        boolean result = interceptor.preHandle(request, response, new Object());
-        verify(response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No token found");
-        assertThat(result).isFalse();
+        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
+            interceptor.preHandle(request, response, new Object());
+        });
+
+        assertThat(ex.getMessage()).isEqualTo("No tokenpizza found");
     }
 
     @Test
