@@ -39,12 +39,9 @@ public class ProductController {
         List<ProductDto> products = productService.getAllProducts(productSearchReq);
         List<RecommendedProductDto> rec = recommendedService.getAllRecommendedProducts();
         List<CategoryDto> categories = categoryService.getAllCategories();
-        List<Long> productIds = rec.stream()
-                .map(RecommendedProductDto::getProductId)
-                .toList();
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("products", products);
-        response.put("recommendProductId", productIds);
+        response.put("recommendProductId", rec);
         response.put("categoriesDropdown", categories);
         return ResponseEntity.ok(response);
     }
