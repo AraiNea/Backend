@@ -79,6 +79,11 @@ public class OrderController {
     public ResponseEntity<?> createOrder(HttpServletRequest request,
                                          @RequestBody OrderAndItemInput orderAndItemInput) {
         Long profileId = (Long) request.getAttribute("profile_id");
+        Integer profileRole = (Integer) request.getAttribute("profile_role");
+        if (profileRole==2) {
+            return  ResponseEntity.badRequest()
+                    .body(Map.of("message", "you are admin"));
+        }
         String createLog = orderService.createOrderAndOrderItems(orderAndItemInput, profileId);
         String deleteLog = cartItemService.clearAllCartItem(profileId);
         if (createLog == "success" && deleteLog == "success") {

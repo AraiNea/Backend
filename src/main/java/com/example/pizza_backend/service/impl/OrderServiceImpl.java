@@ -64,7 +64,8 @@ public class OrderServiceImpl implements OrderService {
         List<CartItemInput> cartItemInputs = orderAndItemInput.getCartItemInputs();
         Profile profile =  profileRepository.findById(profileId)
                 .orElseThrow(()-> new IdNotFoundException("Profile not found"));
-        Address address = addressRepository.findAddressByProfile(profile)
+        Long addressId = profile.getAddress().getAddressId();
+        Address address = addressRepository.findById(addressId)
                 .orElseThrow(()-> new IdNotFoundException("Address not found"));
 
         Orders order = mapper.toOrder(orderInput);

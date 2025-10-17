@@ -32,7 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(adminInterceptor)
                 .addPathPatterns("/admin/**", "/product/**", "/order/**", "/category/**", "/recommend/**")
-                .excludePathPatterns("/product/list", "/order/list", "/category/list", "/category/");
+                .excludePathPatterns("/product/list", "/order/list","/order/create", "/category/list", "/category/");
     }
 
     // ✅ CORS (อย่าใส่ใน @Bean)
