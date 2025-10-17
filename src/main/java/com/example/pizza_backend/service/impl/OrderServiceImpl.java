@@ -7,14 +7,8 @@ import com.example.pizza_backend.api.dto.input.OrderInput;
 import com.example.pizza_backend.api.dto.search.OrderSearchReq;
 import com.example.pizza_backend.api.mapper.Mapper;
 import com.example.pizza_backend.exception.IdNotFoundException;
-import com.example.pizza_backend.persistence.entity.Address;
-import com.example.pizza_backend.persistence.entity.OrderItem;
-import com.example.pizza_backend.persistence.entity.Orders;
-import com.example.pizza_backend.persistence.entity.Profile;
-import com.example.pizza_backend.persistence.repository.AddressRepository;
-import com.example.pizza_backend.persistence.repository.OrderItemRepository;
-import com.example.pizza_backend.persistence.repository.OrderRepository;
-import com.example.pizza_backend.persistence.repository.ProfileRepository;
+import com.example.pizza_backend.persistence.entity.*;
+import com.example.pizza_backend.persistence.repository.*;
 import com.example.pizza_backend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +22,7 @@ public class OrderServiceImpl implements OrderService {
     private ProfileRepository profileRepository;
     private AddressRepository addressRepository;
     private OrderItemRepository orderItemRepository;
+    private ProductRepository productRepository;
     private Mapper mapper;
 
     @Autowired
@@ -35,12 +30,14 @@ public class OrderServiceImpl implements OrderService {
                             Mapper mapper,
                             ProfileRepository profileRepository,
                             AddressRepository addressRepository,
-                            OrderItemRepository orderItemRepository) {
+                            OrderItemRepository orderItemRepository,
+                            ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
         this.profileRepository = profileRepository;
         this.addressRepository = addressRepository;
         this.orderItemRepository = orderItemRepository;
+        this.productRepository = productRepository;
     }
     public List<OrderDto> getOrdersByProfileId(Long profileId) {
         List<Orders> orders = orderRepository.getOrdersByProfileProfileId(profileId);
@@ -77,6 +74,20 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = mapper.toOrderItem(cartItemInput);
             orderItem.setOrder(order);
             orderItemRepository.save(orderItem);
+
+            //ลด stock
+            Product product = productRepository.findById(cartItemInput.getProductId())
+                    .orElseThrow(() -> new IdNotFoundException("Product not found"));
+
+            Integer currentStock = product.getProductStock(); // สมมติว่ามี field ชื่อ stock ใน Product
+            Integer qtyToDeduct = cartItemInput.getQty();
+
+            if (currentStock == null || currentStock < qtyToDeduct) {
+                throw new IllegalStateException("Not enough stock for product: " + product.getProductName());
+            }
+
+            product.setProductStock(currentStock - qtyToDeduct);
+            productRepository.save(product);
         }
         return "success";
     }
