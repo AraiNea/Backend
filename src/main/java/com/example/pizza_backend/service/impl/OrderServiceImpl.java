@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
             Integer qtyToDeduct = cartItemInput.getQty();
 
             if (currentStock == null || currentStock < qtyToDeduct) {
-                throw new IllegalStateException("Not enough stock for product: " + product.getProductName());
+                throw new IllegalArgumentException("Not enough stock for product: " + product.getProductName());
             }
 
             product.setProductStock(currentStock - qtyToDeduct);
