@@ -111,6 +111,7 @@ public interface Mapper {
     @Mapping(source = "product.productName", target = "productName")
     @Mapping(source = "product.productDetail", target = "productDetail")
     @Mapping(source = "product.productPrice", target = "productPrice")
+    @Mapping(source = "product.productImgPath", target = "productImgPath")
     CartItemDto toCartItemDto(CartItem cartItem);
 
     @Mapping(source = "categoryImgPath", target = "categoryImgPath")
