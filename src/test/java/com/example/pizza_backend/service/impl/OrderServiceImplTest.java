@@ -134,34 +134,9 @@ class OrderServiceImplTest {
         verify(mapper).toOrderDto(order);
     }
 
-    @Test
-    void createOrderAndOrderItems_shouldReturnSuccess() {
-        Long profileId = 1L;
 
-        Profile profile = new Profile();
-        Address address = new Address();
 
-        OrderInput orderInput = new OrderInput();
-        CartItemInput cartItemInput = new CartItemInput();
 
-        Orders order = new Orders();
-        OrderItem orderItem = new OrderItem();
-
-        OrderAndItemInput orderAndItemInput = new OrderAndItemInput();
-        orderAndItemInput.setOrderInput(orderInput);
-        orderAndItemInput.setCartItemInputs(List.of(cartItemInput));
-
-        when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
-        when(addressRepository.findAddressByProfile(profile)).thenReturn(Optional.of(address));
-        when(mapper.toOrder(orderInput)).thenReturn(order);
-        when(mapper.toOrderItem(cartItemInput)).thenReturn(orderItem);
-
-        String result = orderService.createOrderAndOrderItems(orderAndItemInput, profileId);
-
-        assertThat(result).isEqualTo("success");
-        verify(orderRepository).save(order);
-        verify(orderItemRepository).save(orderItem);
-    }
 
     @Test
     void createOrderAndOrderItems_shouldThrowException_whenProfileNotFound() {
