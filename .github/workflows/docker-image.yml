@@ -25,6 +25,7 @@ jobs:
     - name: push docker database
       run: docker push pattaratos/arainea-database:latest
   deploy:
+      needs: build
       uses: AraiNea/Deployment/.github/workflows/deploy-k8s.yml@main
       with:
         source_repo: "Backend"
