@@ -48,12 +48,20 @@ public class AdminInterceptor implements HandlerInterceptor {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
+            Long profileId = claims.getBody().get("profile_id", Long.class);
+            String username = claims.getBody().get("username", String.class);
+            Long profileRole = claims.getBody().get("profile_role", Long.class);
+            request.setAttribute("profile_id", profileId);
+            request.setAttribute("username", username);
+            request.setAttribute("profile_role", profileRole);
 
             // 3. ตรวจ role ว่าเป็น admin (user_role == 2)
             Integer role = claims.getBody().get("profile_role", Integer.class);
             if (role != null && role == 2) {
                 return true; // ✅ ผ่าน
             }
+
+
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not admin");
             return false;
 
