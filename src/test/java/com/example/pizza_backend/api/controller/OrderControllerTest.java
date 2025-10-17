@@ -14,7 +14,8 @@ import org.mockito.*;
 
 import org.springframework.http.ResponseEntity;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -41,6 +42,56 @@ class OrderControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    @Test
+    void createOrder_shouldReturnSuccess_whenServiceReturnsSuccess() {
+        OrderAndItemInput input = new OrderAndItemInput();
+        when(request.getAttribute("profile_id")).thenReturn(1L);
+        when(request.getAttribute("profile_role")).thenReturn(1); // ✅ ต้องตรงกับ controller
+        when(orderService.createOrderAndOrderItems(input, 1L)).thenReturn("success");
+        when(cartItemService.clearAllCartItem(1L)).thenReturn("success");
+
+        ResponseEntity<?> response = orderController.createOrder(request, input);
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(body.get("message")).isEqualTo("create order and clear cart success");
+
+        verify(orderService).createOrderAndOrderItems(input, 1L);
+        verify(cartItemService).clearAllCartItem(1L);
+    }
+
+    @Test
+    void createOrder_shouldReturnBadRequest_whenServiceFails() {
+        OrderAndItemInput input = new OrderAndItemInput();
+        when(request.getAttribute("profile_id")).thenReturn(1L);
+        when(request.getAttribute("profile_role")).thenReturn(1); // ✅ ต้องตรงกับ controller
+        when(orderService.createOrderAndOrderItems(input, 1L)).thenReturn("error");
+        when(cartItemService.clearAllCartItem(1L)).thenReturn("success");
+
+        ResponseEntity<?> response = orderController.createOrder(request, input);
+        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
+
+        verify(orderService).createOrderAndOrderItems(input, 1L);
+        verify(cartItemService).clearAllCartItem(1L);
+    }
+
+    @Test
+    void createOrder_shouldReturnBadRequest_whenRoleIsAdmin() {
+        OrderAndItemInput input = new OrderAndItemInput();
+        when(request.getAttribute("profile_id")).thenReturn(1L);
+        when(request.getAttribute("profile_role")).thenReturn(2); // role=2 = admin
+
+        ResponseEntity<?> response = orderController.createOrder(request, input);
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+
+        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
+        assertThat(body.get("message")).isEqualTo("you are admin");
+
+        verify(orderService, never()).createOrderAndOrderItems(any(), anyLong());
+        verify(cartItemService, never()).clearAllCartItem(anyLong());
+    }
+
+    // ส่วน getOrders / getAllOrders / updateOrder สามารถใช้เหมือนเดิม
     @Test
     void getOrders_shouldReturnListOfOrders() {
         OrderDto orderDto = mock(OrderDto.class);
@@ -79,37 +130,6 @@ class OrderControllerTest {
 
         verify(orderService).getAllOrders(req);
         verify(orderItemService).getOrderItems(1L);
-    }
-
-    @Test
-    void createOrder_shouldReturnSuccess_whenServiceReturnsSuccess() {
-        OrderAndItemInput input = new OrderAndItemInput();
-        when(request.getAttribute("profile_id")).thenReturn(1L);
-        when(orderService.createOrderAndOrderItems(input, 1L)).thenReturn("success");
-        when(cartItemService.clearAllCartItem(1L)).thenReturn("success");
-
-        ResponseEntity<?> response = orderController.createOrder(request, input);
-        Map<String, Object> body = (Map<String, Object>) response.getBody();
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(body.get("message")).isEqualTo("create order and clear cart success");
-
-        verify(orderService).createOrderAndOrderItems(input, 1L);
-        verify(cartItemService).clearAllCartItem(1L);
-    }
-
-    @Test
-    void createOrder_shouldReturnBadRequest_whenServiceFails() {
-        OrderAndItemInput input = new OrderAndItemInput();
-        when(request.getAttribute("profile_id")).thenReturn(1L);
-        when(orderService.createOrderAndOrderItems(input, 1L)).thenReturn("error");
-        when(cartItemService.clearAllCartItem(1L)).thenReturn("success");
-
-        ResponseEntity<?> response = orderController.createOrder(request, input);
-        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
-
-        verify(orderService).createOrderAndOrderItems(input, 1L);
-        verify(cartItemService).clearAllCartItem(1L);
     }
 
     @Test
