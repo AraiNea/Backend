@@ -24,7 +24,8 @@ jobs:
       run: docker push pattaratos/arainea-backend:latest
     - name: push docker database
       run: docker push pattaratos/arainea-database:latest
-    - name: Trigger Deploy Workflow
-      uses: Arainea/Deployment/.github/workflows/deploy-k8s.yml@main
+  deploy:
+      uses: AraiNea/Deployment/.github/workflows/deploy-k8s.yml@main
       with:
         source_repo: "Backend"
+      secrets: inherit
