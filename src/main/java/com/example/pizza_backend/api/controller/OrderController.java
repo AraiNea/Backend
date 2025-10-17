@@ -79,8 +79,9 @@ public class OrderController {
     public ResponseEntity<?> createOrder(HttpServletRequest request,
                                          @RequestBody OrderAndItemInput orderAndItemInput) {
         Long profileId = (Long) request.getAttribute("profile_id");
-        Integer profileRole = (Integer) request.getAttribute("profile_role");
-        if (profileRole==2) {
+        Number roleNum = (Number) request.getAttribute("profile_role");
+        Integer role = roleNum != null ? roleNum.intValue() : null;
+        if (role==2) {
             return  ResponseEntity.badRequest()
                     .body(Map.of("message", "you are admin"));
         }
