@@ -17,37 +17,37 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag pattaratos/arainea-backend:latest
     - name: Build Database image
-      run: docker build . --file Dockerfile.db --tag pattaratos/arainea-database:latest
+      run: docker build . --file src/main/resources/persistence/Dockerfile --tag pattaratos/arainea-database:latest
     - name: login
       run: docker login -u pattaratos -p dckr_pat_sJjyI445b42CCn2vjtYA9dMs5Po
     - name: push docker backend
       run: docker push pattaratos/arainea-backend:latest
     - name: push docker database
       run: docker push pattaratos/arainea-database:latest
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Backend repo
-        uses: actions/checkout@v4
-  
-      - name: Checkout Deployment repo
-        uses: actions/checkout@v4
-        with:
-          repository: AraiNea/Deployment
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: deployment
-  
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v4
-  
-      - name: Setup Minikube (optional)
-        uses: medyagh/setup-minikube@latest
-  
-      - name: Apply manifests
-        run: |
-          kubectl apply -f deployment/k8s/namespace.yaml || true
-          sleep 3
-          kubectl apply -f deployment/k8s/
+#  deploy:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Backend repo
+#        uses: actions/checkout@v4
+#
+#      - name: Checkout Deployment repo
+#        uses: actions/checkout@v4
+#        with:
+#          repository: AraiNea/Deployment
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          path: deployment
+#
+#      - name: Setup kubectl
+#        uses: azure/setup-kubectl@v4
+#
+#      - name: Setup Minikube (optional)
+#        uses: medyagh/setup-minikube@latest
+#
+#      - name: Apply manifests
+#        run: |
+#          kubectl apply -f deployment/k8s/namespace.yaml || true
+#          sleep 3
+#          kubectl apply -f deployment/k8s/
           
 

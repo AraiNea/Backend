@@ -1,10 +1,133 @@
+-- =====================================================
+-- SCHEMA INITIALIZATION FOR E-COMMERCE MODULE
+-- =====================================================
 
--- ==============================================
--- Mock Data Seed (EN) for 9 Tables (PostgreSQL)
--- - No inserts into auto-increment columns.
--- - Uses INSERT ... SELECT to resolve foreign keys via natural keys.
--- - Backfills profile.address_id after address insertion (1-1 link).
--- ==============================================
+CREATE TABLE address (
+                         address_id BIGSERIAL PRIMARY KEY,
+                         phone VARCHAR(50),
+                         province VARCHAR(100),
+                         amphor VARCHAR(100),
+                         district VARCHAR(100),
+                         zip_code VARCHAR(10),
+                         addr_num VARCHAR(100),
+                         detail TEXT,
+                         received_name VARCHAR(100)
+);
+
+CREATE TABLE profile (
+                         profile_id BIGSERIAL PRIMARY KEY,
+                         profile_name VARCHAR(100),
+                         profile_sname VARCHAR(100),
+                         profile_role INT,
+                         address_id BIGINT UNIQUE,
+                         username VARCHAR(100) UNIQUE,
+                         password VARCHAR(255),
+                         created_at TIMESTAMP,
+                         CONSTRAINT fk_profile_address
+                             FOREIGN KEY (address_id)
+                                 REFERENCES address(address_id)
+                                 ON DELETE SET NULL
+);
+
+CREATE TABLE cart (
+                      cart_id BIGSERIAL PRIMARY KEY,
+                      profile_id BIGINT UNIQUE,
+                      created_at DATE,
+                      note TEXT,
+                      CONSTRAINT fk_cart_profile
+                          FOREIGN KEY (profile_id)
+                              REFERENCES profile(profile_id)
+                              ON DELETE CASCADE
+);
+
+CREATE TABLE category (
+                          category_id BIGSERIAL PRIMARY KEY,
+                          category_name VARCHAR(100),
+                          category_img VARCHAR(255),
+                          category_product_path VARCHAR(255),
+                          category_priority BIGINT
+);
+
+CREATE TABLE product (
+                         product_id BIGSERIAL PRIMARY KEY,
+                         category_id BIGINT,
+                         product_name VARCHAR(255),
+                         product_detail TEXT,
+                         product_img VARCHAR(255),
+                         product_price INT,
+                         product_stock INT,
+                         is_active INT,
+                         created_at TIMESTAMP,
+                         created_by VARCHAR(100),
+                         updated_at TIMESTAMP,
+                         updated_by VARCHAR(100),
+                         CONSTRAINT fk_product_category
+                             FOREIGN KEY (category_id)
+                                 REFERENCES category(category_id)
+                                 ON DELETE SET NULL
+);
+
+CREATE TABLE cart_item (
+                           cart_item_id BIGSERIAL PRIMARY KEY,
+                           cart_id BIGINT,
+                           product_id BIGINT,
+                           qty INT,
+                           line_total INT,
+                           CONSTRAINT fk_cartitem_cart
+                               FOREIGN KEY (cart_id)
+                                   REFERENCES cart(cart_id)
+                                   ON DELETE CASCADE,
+                           CONSTRAINT fk_cartitem_product
+                               FOREIGN KEY (product_id)
+                                   REFERENCES product(product_id)
+                                   ON DELETE SET NULL
+);
+
+CREATE TABLE recommended_product (
+                                     recommended_id BIGSERIAL PRIMARY KEY,
+                                     product_id BIGINT,
+                                     recommended_img VARCHAR(255),
+                                     CONSTRAINT fk_recommended_product
+                                         FOREIGN KEY (product_id)
+                                             REFERENCES product(product_id)
+                                             ON DELETE CASCADE
+);
+
+CREATE TABLE orders (
+                        order_id BIGSERIAL PRIMARY KEY,
+                        profile_id BIGINT,
+                        address_id BIGINT,
+                        status INT,
+                        subtotal INT,
+                        delivery_fee INT,
+                        grand_total INT,
+                        created_at TIMESTAMP,
+                        fulfilled_at TIMESTAMP,
+                        fulfilled_by VARCHAR(100),
+                        CONSTRAINT fk_orders_profile
+                            FOREIGN KEY (profile_id)
+                                REFERENCES profile(profile_id)
+                                ON DELETE SET NULL,
+                        CONSTRAINT fk_orders_address
+                            FOREIGN KEY (address_id)
+                                REFERENCES address(address_id)
+                                ON DELETE SET NULL
+);
+
+CREATE TABLE order_item (
+                            order_item_id BIGSERIAL PRIMARY KEY,
+                            order_id BIGINT,
+                            product_id_snapshot BIGINT,
+                            product_name VARCHAR(255),
+                            product_detail TEXT,
+                            product_price INT,
+                            qty INT,
+                            line_total INT,
+                            CONSTRAINT fk_orderitem_order
+                                FOREIGN KEY (order_id)
+                                    REFERENCES orders(order_id)
+                                    ON DELETE CASCADE
+);
 
 BEGIN;
 
