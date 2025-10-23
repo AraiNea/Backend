@@ -10,7 +10,9 @@ import com.example.pizza_backend.exception.IdNotFoundException;
 import com.example.pizza_backend.persistence.entity.Cart;
 import com.example.pizza_backend.persistence.entity.Category;
 import com.example.pizza_backend.persistence.entity.Product;
+import com.example.pizza_backend.persistence.entity.ProductDocument;
 import com.example.pizza_backend.persistence.repository.CategoryRepository;
+import com.example.pizza_backend.persistence.repository.ProductElasticsearchRepository;
 import com.example.pizza_backend.persistence.repository.ProductRepository;
 import com.example.pizza_backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +32,17 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final Mapper mapper;
     private final CategoryRepository categoryRepository;
+    private final ProductElasticsearchRepository productElasticsearchRepository;
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository,
                               Mapper mapper,
-                              CategoryRepository categoryRepository) {
+                              CategoryRepository categoryRepository,
+                              ProductElasticsearchRepository productElasticsearchRepository) {
         this.productRepository = productRepository;
         this.mapper = mapper;
         this.categoryRepository = categoryRepository;
+        this.productElasticsearchRepository = productElasticsearchRepository;
     }
 
     @Override
@@ -53,6 +58,23 @@ public class ProductServiceImpl implements ProductService {
         return products.stream()
                 .map(p -> mapper.toProductDto(p))
                 .toList();
+    }
+
+    @Override
+    public List<ProductDto> getSearchProducts(ProductSearchReq req) {
+        List<ProductDocument> products = productElasticsearchRepository.findByProductNameContaining(req.getProductName());
+        return products.stream()
+                .map(p -> ProductDto.builder()
+                        .categoryId(p.getCategoryId())
+                        .productId(p.getProductId())
+                        .productName(p.getProductName())
+                        .productDetail(p.getProductDetail())
+                        .productPrice(p.getProductPrice())
+                        .productStock(p.getProductStock())
+                        .productImgPath(p.getProductImgPath())
+                        .isActive(p.getIsActive())
+                        .build()
+                ).toList();
     }
 
     @Override

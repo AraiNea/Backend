@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01
+    command: >
+      sh -c "bin/elasticsearch-plugin install analysis-icu && bin/elasticsearch"
+    user: "elasticsearch"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es01-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - esnet
+
+networks:
+  esnet:
+
+volumes:
+  es01-data:

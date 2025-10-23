@@ -45,6 +45,15 @@ public class ProductController {
         response.put("categoriesDropdown", categories);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> getSearchProducts(@ModelAttribute ProductSearchReq productSearchReq) {
+        List<ProductDto> products = productService.getSearchProducts(productSearchReq);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("products", products);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(
                                             HttpServletRequest request,

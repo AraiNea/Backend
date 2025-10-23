@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -21,8 +22,8 @@ public class ProductDto {
     private Integer productStock;
     private String productImgPath;
     private Integer isActive;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private String createdBy;
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     private String updatedBy;
 }

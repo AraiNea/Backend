@@ -1,11 +1,9 @@
-package com.example.pizza_backend;
+package com.example.pizza_backend.config;
 
 import com.example.pizza_backend.Auth.AdminInterceptor;
 import com.example.pizza_backend.Auth.AuthInterceptor;
 import io.micrometer.common.lang.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -32,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(adminInterceptor)
                 .addPathPatterns("/admin/**", "/product/**", "/order/**", "/category/**", "/recommend/**")
-                .excludePathPatterns("/product/list",
+                .excludePathPatterns("/product/list","/product/search",
                         "/order/list","/order/create", "/order/",
                         "/category/list", "/category/");
     }
