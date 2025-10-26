@@ -24,30 +24,30 @@ jobs:
       run: docker push pattaratos/arainea-backend:latest
     - name: push docker database
       run: docker push pattaratos/arainea-database:latest
-#  deploy:
-#    needs: build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout Backend repo
-#        uses: actions/checkout@v4
-#
-#      - name: Checkout Deployment repo
-#        uses: actions/checkout@v4
-#        with:
-#          repository: AraiNea/Deployment
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          path: deployment
-#
-#      - name: Setup kubectl
-#        uses: azure/setup-kubectl@v4
-#
-#      - name: Setup Minikube (optional)
-#        uses: medyagh/setup-minikube@latest
-#
-#      - name: Apply manifests
-#        run: |
-#          kubectl apply -f deployment/k8s/namespace.yaml || true
-#          sleep 3
-#          kubectl apply -f deployment/k8s/
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Backend repo
+        uses: actions/checkout@v4
+  
+      - name: Checkout Deployment repo
+        uses: actions/checkout@v4
+        with:
+          repository: AraiNea/Deployment
+          path: deployment
+
+          
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+  
+      - name: Setup Minikube (optional)
+        uses: medyagh/setup-minikube@latest
+  
+      - name: Apply manifests
+        run: |
+          kubectl apply -f deployment/k8s/namespace.yaml || true
+          sleep 5
+          kubectl apply -f deployment/k8s/
           
 
