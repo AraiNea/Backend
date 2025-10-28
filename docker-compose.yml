@@ -11,9 +11,6 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.seed_hosts=es01
       - cluster.initial_master_nodes=es01
-    command: >
-      sh -c "bin/elasticsearch-plugin install analysis-icu && bin/elasticsearch"
-    user: "elasticsearch"
     ulimits:
       memlock:
         soft: -1
