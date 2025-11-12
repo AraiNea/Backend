@@ -12,27 +12,28 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("""
-        SELECT p FROM Product p 
+    @Query(value = """
+        SELECT * FROM product p
         WHERE 1=1
-          AND (:productId IS NULL OR p.productId = :productId)
+          AND (:productId IS NULL OR p.product_id = :productId)
           AND (
             :productName IS NULL OR 
-            LOWER(REPLACE(p.productName, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:productName, ' ', ''), '%'))
+            LOWER(REPLACE(CAST(p.product_name AS text), ' ', '')) 
+              LIKE LOWER(CONCAT('%', REPLACE(:productName, ' ', ''), '%'))
           )
-          AND (:productPrice IS NULL OR p.productPrice = :productPrice)
-          AND (:productStock IS NULL OR p.productStock = :productStock)
-          AND (:isActive IS NULL OR p.isActive = :isActive)
-          AND (:categoryId IS NULL OR p.category.categoryId = :categoryId)
-        ORDER BY p.productId
-    """)
+          AND (:productPrice IS NULL OR p.product_price = :productPrice)
+          AND (:productStock IS NULL OR p.product_stock = :productStock)
+          AND (:isActive IS NULL OR p.is_active = :isActive)
+          AND (:categoryId IS NULL OR p.category_id = :categoryId)
+        ORDER BY p.product_id
+    """, nativeQuery = true)
     List<Product> searchProducts(
             @Param("productId") Long  productId,
             @Param("productName") String productName,
-            @Param("productPrice") String productPrice,
-            @Param("productStock") String productStock,
+            @Param("productPrice") Integer productPrice,
+            @Param("productStock") Integer productStock,
             @Param("categoryId" ) Long categoryId,
-            @Param("isActive") String isActive
+            @Param("isActive") Integer isActive
     );
 
 

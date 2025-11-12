@@ -6,8 +6,8 @@ import lombok.Data;
 public class ProductSearchReq {
     private Long  productId;
     private String productName;
-    private String productPrice;
-    private String productStock;
+    private Integer productPrice;
+    private Integer productStock;
     private Long categoryId;
-    private String isActive;
+    private Integer isActive;
 }
