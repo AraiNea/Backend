@@ -175,7 +175,7 @@ SELECT c.category_id, 'Double Pepperoni', 'Ham, pineapple, Loaded pepperoni', 'D
 FROM category c WHERE c.category_name = 'pizza';
 
 INSERT INTO product (category_id, product_name, product_detail, product_img, product_price, product_stock, is_active, created_at, created_by, updated_at, updated_by)
-SELECT c.category_id, 'Meat Deluxe', 'Tomato sauce, mozzarella', 'Meat_deluxe.png', 279, 2, 1, NOW() - INTERVAL '10 days', 'system', NULL, NULL
+SELECT c.category_id, 'Meat Deluxe', 'Tomato sauce, mozzarella', 'Meat_Deluxe.png', 279, 2, 1, NOW() - INTERVAL '10 days', 'system', NULL, NULL
 FROM category c WHERE c.category_name = 'pizza';
 
 INSERT INTO product (category_id, product_name, product_detail, product_img, product_price, product_stock, is_active, created_at, created_by, updated_at, updated_by)

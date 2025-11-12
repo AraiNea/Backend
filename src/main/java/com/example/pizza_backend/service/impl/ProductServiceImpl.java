@@ -55,6 +55,21 @@ public class ProductServiceImpl implements ProductService {
                 req.getCategoryId(),
                 req.getIsActive()
         );
+        if (products.isEmpty() || products.size() == 0){
+            List<ProductDocument> productsElastic = productElasticsearchRepository.findByProductNameContaining(req.getProductName());
+            return productsElastic.stream()
+                    .map(p -> ProductDto.builder()
+                            .categoryId(p.getCategoryId())
+                            .productId(p.getProductId())
+                            .productName(p.getProductName())
+                            .productDetail(p.getProductDetail())
+                            .productPrice(p.getProductPrice())
+                            .productStock(p.getProductStock())
+                            .productImgPath(p.getProductImgPath())
+                            .isActive(p.getIsActive())
+                            .build()
+                    ).toList();
+        }
         return products.stream()
                 .map(p -> mapper.toProductDto(p))
                 .toList();

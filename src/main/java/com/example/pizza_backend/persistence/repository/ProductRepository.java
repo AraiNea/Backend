@@ -12,14 +12,20 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT p FROM Product p WHERE 1=1 " +
-            "AND (:productId IS NULL OR p.productId = :productId)" +
-            "AND (:productName IS NULL OR p.productName LIKE %:productName%) " +
-            "AND (:productPrice IS NULL OR p.productPrice = :productPrice) " +
-            "AND (:productStock IS NULL OR p.productStock = :productStock) " +
-            "AND (:isActive IS NULL OR p.isActive = :isActive)" +
-            "AND (:categoryId IS NULL OR p.category.categoryId = :categoryId)" +
-            "order by p.productId")
+    @Query("""
+        SELECT p FROM Product p 
+        WHERE 1=1
+          AND (:productId IS NULL OR p.productId = :productId)
+          AND (
+            :productName IS NULL OR 
+            LOWER(REPLACE(p.productName, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:productName, ' ', ''), '%'))
+          )
+          AND (:productPrice IS NULL OR p.productPrice = :productPrice)
+          AND (:productStock IS NULL OR p.productStock = :productStock)
+          AND (:isActive IS NULL OR p.isActive = :isActive)
+          AND (:categoryId IS NULL OR p.category.categoryId = :categoryId)
+        ORDER BY p.productId
+    """)
     List<Product> searchProducts(
             @Param("productId") Long  productId,
             @Param("productName") String productName,
