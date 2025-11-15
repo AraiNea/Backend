@@ -7,9 +7,23 @@ on:
     branches: [ "main" ]
 
 jobs:
+#เพิ่ม
+  test:
+    runs-on: self-hosted-test   
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run Unit Tests
+        run: mvn test
+      
   build:
-
+    needs: test #นผใเพิ่มมา
     runs-on: ubuntu-latest
 
     steps:
