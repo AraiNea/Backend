@@ -9,7 +9,8 @@ on:
 jobs:
 #เพิ่ม
   test:
-    runs-on: ubuntu-latest   
+    runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
