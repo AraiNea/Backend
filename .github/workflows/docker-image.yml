@@ -46,5 +46,3 @@ jobs:
           kubectl apply -f deployment/k8s/namespace.yaml || true
           sleep 5
           kubectl apply -f deployment/k8s/
-          
-
