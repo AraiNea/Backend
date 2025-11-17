@@ -19,12 +19,15 @@ public class ElasticsearchInitializer {
     public void init() {
         IndexOperations indexOps = elasticsearchOperations.indexOps(ProductDocument.class);
 
-        if (!indexOps.exists()) {
-            indexOps.create();
-            indexOps.putMapping(indexOps.createMapping());
-            System.out.println("✅ Created Elasticsearch index 'product' automatically.");
-        } else {
-            System.out.println("ℹ️ Elasticsearch index 'product' already exists.");
+        if (indexOps.exists()) {
+            System.out.println("⚠️ Index product already exists. Deleting...");
+            indexOps.delete();
         }
+
+        // Create index again
+        indexOps.create();
+        indexOps.putMapping(indexOps.createMapping());
+
+        System.out.println("✅ Recreated Elasticsearch index product successfully.");
     }
 }

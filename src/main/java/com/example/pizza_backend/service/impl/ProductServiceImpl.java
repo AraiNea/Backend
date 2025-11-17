@@ -60,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
             return productsElastic.stream()
                     .map(p -> ProductDto.builder()
                             .categoryId(p.getCategoryId())
+                            .categoryName(p.getCategoryName())
                             .productId(p.getProductId())
                             .productName(p.getProductName())
                             .productDetail(p.getProductDetail())
@@ -68,7 +69,9 @@ public class ProductServiceImpl implements ProductService {
                             .productImgPath(p.getProductImgPath())
                             .isActive(p.getIsActive())
                             .build()
-                    ).toList();
+                    )
+                    .distinct()
+                    .toList();
         }
         return products.stream()
                 .map(p -> mapper.toProductDto(p))

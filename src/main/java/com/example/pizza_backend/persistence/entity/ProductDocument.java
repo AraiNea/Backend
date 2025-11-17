@@ -14,6 +14,7 @@ public class ProductDocument {
     @Id
     private Long productId;
     private Long categoryId;
+    private String categoryName;
     private String productName;
     private String productDetail;
     private String productImg;
