@@ -2,8 +2,10 @@ package com.example.pizza_backend.api.controller;
 
 
 import com.example.pizza_backend.api.dto.*;
+import com.example.pizza_backend.api.dto.input.CartItemInput;
 import com.example.pizza_backend.api.dto.input.OrderAndItemInput;
 import com.example.pizza_backend.api.dto.input.OrderInput;
+import com.example.pizza_backend.api.dto.input.OrderItemsInput;
 import com.example.pizza_backend.api.dto.search.OrderSearchReq;
 import com.example.pizza_backend.service.CartItemService;
 import com.example.pizza_backend.service.OrderItemService;
@@ -102,6 +104,43 @@ public class OrderController {
         if (createLog == "success") {
             return  ResponseEntity.ok()
                     .body(Map.of("message", "Update order success"));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/reorder")
+    public ResponseEntity<?> reOrder(HttpServletRequest request,
+                                     @RequestBody OrderItemsInput OrderItemsInput) {
+
+        Long profileId = (Long) request.getAttribute("profile_id");
+        Number roleNum = (Number) request.getAttribute("profile_role");
+        Integer role = roleNum != null ? roleNum.intValue() : null;
+        if (role==2) {
+            return  ResponseEntity.badRequest()
+                    .body(Map.of("message", "you are admin"));
+        }
+        cartItemService.clearAllCartItem(profileId);
+        String createLog = "not success";
+        for (OrderItemDto item : OrderItemsInput.getOrderItems()) {
+
+            CartItemInput input = new CartItemInput();
+
+            // แปลง orderItem เป็น cartItem
+            input.setProductId(item.getProductIdSnapshot());
+            input.setQty(item.getQty());
+            input.setLineTotal(item.getLineTotal());
+            input.setProductName(item.getProductName());
+            input.setProductDetail(item.getProductDetail());
+            input.setProductPrice(item.getProductPrice());
+
+            // เรียกฟังก์ชัน createCartItem ที่มีอยู่แล้ว
+            createLog = cartItemService.createCartItem(input, profileId);
+        }
+
+
+        if (createLog == "success") {
+            return  ResponseEntity.ok()
+                    .body(Map.of("message", "reorder success"));
         }
         return ResponseEntity.badRequest().build();
     }

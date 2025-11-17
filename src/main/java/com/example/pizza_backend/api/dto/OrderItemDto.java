@@ -12,7 +12,7 @@ public class OrderItemDto {
     private Long productIdSnapshot;
     private String productName;
     private String productDetail;
-    private Integer productPrice;
+    private Double productPrice;
     private Integer qty;
     private Integer lineTotal;
 }
