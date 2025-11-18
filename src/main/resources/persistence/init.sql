@@ -106,6 +106,18 @@ CREATE TABLE discount_code (
                                     ON DELETE CASCADE
 );
 
+CREATE TABLE inventory_transaction (
+                                transaction_id      BIGSERIAL PRIMARY KEY,
+                                qty_change          INT,
+                                transaction_type    INT,
+                                created_at          TIMESTAMP,
+                                product_id BIGINT,
+                               CONSTRAINT fk_invt_product
+                                   FOREIGN KEY (product_id)
+                                       REFERENCES product(product_id)
+                                       ON DELETE CASCADE
+);
+
 CREATE TABLE orders (
                         order_id BIGSERIAL PRIMARY KEY,
                         profile_id BIGINT,
@@ -325,5 +337,64 @@ INSERT INTO discount_code (code, value, is_active, qty, recommended_id) VALUES
 ('BBQFLASH',30, 0,   0, 2),   -- โค้ดหมด/ปิดการใช้งาน (is_active=0)
 
 -- recommended_id = 3 (Lemon_tea.png)
-('LEMON5',   5, 1, 5, 3),   -- ลด 5% ใช้ได้ 5 ครั้ง
+('LEMON5',   5, 1, 5, 3);   -- ลด 5% ใช้ได้ 5 ครั้ง
+
+-- 11)INVENTORY_TRANSACTION
+INSERT INTO inventory_transaction (qty_change, transaction_type, created_at, product_id) VALUES
+-- product_id = 1 (stock = 10)
+    (15, 1, '2025-01-01', 1),
+    (3, 2, '2025-01-03', 1),
+    (2, 2, '2025-01-05', 1),
+-- คงเหลือ = 10
+
+-- product_id = 3 (stock = 20)
+    (25, 1, '2025-01-02', 3),
+    (5, 2, '2025-01-06', 3),
+-- คงเหลือ = 20
+
+-- product_id = 4 (stock = 2)
+    (5, 1, '2025-01-01', 4),
+    (3, 2, '2025-01-07', 4),
+-- คงเหลือ = 2
+
+-- product_id = 5 (stock = 1)
+    (4, 1, '2025-01-03', 5),
+    (3, 2, '2025-01-04', 5),
+-- คงเหลือ = 1
+
+-- product_id = 7 (stock = 6)
+    (10, 1, '2025-01-02', 7),
+    (4, 2, '2025-01-05', 7),
+-- คงเหลือ = 6
+
+-- product_id = 8 (stock = 6)
+    (12, 1, '2025-01-01', 8),
+    (6, 2, '2025-01-03', 8),
+-- คงเหลือ = 6
+
+-- product_id = 9 (stock = 9)
+    (10, 1, '2025-01-04', 9),
+    (1, 2, '2025-01-06', 9),
+-- คงเหลือ = 5
+
+-- product_id = 10 (stock = 5)
+    (12, 1, '2025-01-03', 10),
+    (7, 2, '2025-01-08', 10),
+-- คงเหลือ = 5
+
+-- product_id = 11 (stock = 0)
+    (7, 1, '2025-01-01', 11),
+    (7, 2, '2025-01-09', 11),
+-- คงเหลือ = 0
+
+-- product_id = 2 (stock = 4)
+    (10, 1, '2025-01-01', 2),
+    (6, 2, '2025-01-05', 2),
+-- คงเหลือ = 4
+
+-- product_id = 6 (stock = 2)
+    (6, 1, '2025-01-03', 6),
+    (4, 2, '2025-01-06', 6);
+-- คงเหลือ = 2
+
 COMMIT;
