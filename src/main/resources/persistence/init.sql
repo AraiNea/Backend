@@ -93,6 +93,19 @@ CREATE TABLE recommended_product (
                                              ON DELETE CASCADE
 );
 
+CREATE TABLE discount_code (
+                               discount_id   BIGSERIAL PRIMARY KEY,
+                               code          VARCHAR(100) NOT NULL,
+                               value         INT,
+                               is_active     INT,
+                               qty           INT,
+                               recommended_id BIGINT,
+                               CONSTRAINT fk_dc_rec
+                                   FOREIGN KEY (recommended_id)
+                                    REFERENCES recommended_product(recommended_id)
+                                    ON DELETE CASCADE
+);
+
 CREATE TABLE orders (
                         order_id BIGSERIAL PRIMARY KEY,
                         profile_id BIGINT,
@@ -302,4 +315,15 @@ INSERT INTO recommended_product (product_id, recommended_img)
 SELECT pr.product_id, 'lemon_tea.png'
 FROM product pr WHERE pr.product_name = 'Lemon Tea';
 
+-- 10) DISCOUNT_CODE
+INSERT INTO discount_code (code, value, is_active, qty, recommended_id) VALUES
+-- recommended_id = 1  (BaconHam_Cheese.png)
+('BACON20', 20, 1,  50, 1),   -- ลด 20% ใช้ได้ 50 ครั้ง
+
+-- recommended_id = 2 (BBQ_Smoked.png)
+('BBQ25',   25, 1,  40, 2),   -- ลด 25% ใช้ได้ 40 ครั้ง
+('BBQFLASH',30, 0,   0, 2),   -- โค้ดหมด/ปิดการใช้งาน (is_active=0)
+
+-- recommended_id = 3 (Lemon_tea.png)
+('LEMON5',   5, 1, 5, 3),   -- ลด 5% ใช้ได้ 5 ครั้ง
 COMMIT;

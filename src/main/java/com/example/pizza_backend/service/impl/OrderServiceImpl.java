@@ -1,5 +1,6 @@
 package com.example.pizza_backend.service.impl;
 
+import com.example.pizza_backend.api.dto.DiscountCodeDto;
 import com.example.pizza_backend.api.dto.OrderDto;
 import com.example.pizza_backend.api.dto.input.CartItemInput;
 import com.example.pizza_backend.api.dto.input.OrderAndItemInput;
@@ -23,6 +24,7 @@ public class OrderServiceImpl implements OrderService {
     private AddressRepository addressRepository;
     private OrderItemRepository orderItemRepository;
     private ProductRepository productRepository;
+    private DiscountCodeRepository discountCodeRepository;
     private Mapper mapper;
 
     @Autowired
@@ -31,13 +33,15 @@ public class OrderServiceImpl implements OrderService {
                             ProfileRepository profileRepository,
                             AddressRepository addressRepository,
                             OrderItemRepository orderItemRepository,
-                            ProductRepository productRepository) {
+                            ProductRepository productRepository,
+                            DiscountCodeRepository discountCodeRepository) {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
         this.profileRepository = profileRepository;
         this.addressRepository = addressRepository;
         this.orderItemRepository = orderItemRepository;
         this.productRepository = productRepository;
+        this.discountCodeRepository = discountCodeRepository;
     }
     public List<OrderDto> getOrdersByProfileId(Long profileId) {
         List<Orders> orders = orderRepository.getOrdersByProfileProfileId(profileId);
@@ -64,6 +68,20 @@ public class OrderServiceImpl implements OrderService {
         Long addressId = profile.getAddress().getAddressId();
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(()-> new IdNotFoundException("Address not found"));
+
+        //ลด qty code ในกรณีที่มี
+        if (orderAndItemInput.getDiscountCode() != null) {
+            Long discountId = orderAndItemInput.getDiscountCode().getDiscountId();
+            DiscountCode code = discountCodeRepository.findById(discountId)
+                    .orElseThrow(() -> new IdNotFoundException("Code not found"));
+            Integer currentQty = code.getQty();
+            Integer codeQtyToDeduct = 1;
+            if (currentQty == null || currentQty < codeQtyToDeduct) {
+                throw new IllegalArgumentException("Code is out");
+            }
+            code.setQty(currentQty - codeQtyToDeduct);
+            discountCodeRepository.save(code);
+        }
 
         Orders order = mapper.toOrder(orderInput);
         order.setAddress(address);

@@ -132,5 +132,8 @@ public interface Mapper {
     RecommendedProductDto toRecommendedProductDto(RecommendedProduct recommendedProduct);
 
     ProfileDto toProfileDto(Profile profile);
+
+    @Mapping(source = "recommendedProduct.product.productId", target = "productId")
+    DiscountCodeDto toDiscountCodeDto(DiscountCode discountCode);
 }
 
