@@ -325,5 +325,5 @@ INSERT INTO discount_code (code, value, is_active, qty, recommended_id) VALUES
 ('BBQFLASH',30, 0,   0, 2),   -- โค้ดหมด/ปิดการใช้งาน (is_active=0)
 
 -- recommended_id = 3 (Lemon_tea.png)
-('LEMON5',   5, 1, 5, 3),   -- ลด 5% ใช้ได้ 5 ครั้ง
+('LEMON5',   5, 1, 5, 3);   -- ลด 5% ใช้ได้ 5 ครั้ง
 COMMIT;
