@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,20 @@ public class InventoryController {
         ProductSearchReq productSearchReq = new ProductSearchReq();
         productSearchReq.setProductName(req.getProductName());
         List<ProductDto> products = productService.getAllProducts(productSearchReq);
+        if (products.isEmpty()) {
+            Map<String, Object> total = new LinkedHashMap<>();
+            total.put("remaining", 0);
+            total.put("stockOut", 0);
+
+            List<Object> emptyStockTable = new ArrayList<>();
+
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("TotalInventory", total);
+            response.put("StockTable", emptyStockTable);  // ส่ง List ว่าง
+
+            return ResponseEntity.ok(response);
+        }
+
         Integer totalRemaining = inventoryService.getTotalInventory(products, 1, req);
         Integer totalOut = inventoryService.getTotalInventory(products, 2, req);
 
