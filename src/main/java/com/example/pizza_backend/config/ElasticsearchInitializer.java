@@ -3,10 +3,12 @@ package com.example.pizza_backend.config;
 import com.example.pizza_backend.persistence.entity.ProductDocument;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
 
 @Configuration
+@Profile("!test")
 public class ElasticsearchInitializer {
 
     private final ElasticsearchOperations elasticsearchOperations;

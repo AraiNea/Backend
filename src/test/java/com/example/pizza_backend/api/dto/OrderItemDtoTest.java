@@ -13,7 +13,7 @@ class OrderItemDtoTest {
                 .productIdSnapshot(100L)
                 .productName("Cheese Pizza")
                 .productDetail("Delicious pizza with cheese")
-                .productPrice(250)
+                .productPrice(250.0)
                 .qty(2)
                 .lineTotal(500)
                 .build();
@@ -41,7 +41,7 @@ class OrderItemDtoTest {
         OrderItemDto dto = OrderItemDto.builder()
                 .orderItemId(1L)
                 .productName("Pizza")
-                .productPrice(250)
+                .productPrice(250.0)
                 .build();
 
         String str = dto.toString();

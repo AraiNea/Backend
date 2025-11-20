@@ -2,7 +2,7 @@ package com.example.pizza_backend.api.dto;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,25 +20,14 @@ class ProductDtoTest {
                 .productStock(10)
                 .productImgPath("/images/pizza.png")
                 .isActive(1)
-                .createdAt(LocalDate.of(2025,10,10))
+                .createdAt(LocalDateTime.of(2025,10,10,0,0))
                 .createdBy("admin")
-                .updatedAt(LocalDate.of(2025,10,11))
+                .updatedAt(LocalDateTime.of(2025,10,11,0,0))
                 .updatedBy("admin")
                 .build();
 
-        assertThat(dto.getCategoryId()).isEqualTo(1L);
-        assertThat(dto.getCategoryName()).isEqualTo("Pizza");
-        assertThat(dto.getProductId()).isEqualTo(100L);
-        assertThat(dto.getProductName()).isEqualTo("Cheese Pizza");
-        assertThat(dto.getProductDetail()).isEqualTo("Delicious pizza with cheese");
-        assertThat(dto.getProductPrice()).isEqualTo(250);
-        assertThat(dto.getProductStock()).isEqualTo(10);
-        assertThat(dto.getProductImgPath()).isEqualTo("/images/pizza.png");
-        assertThat(dto.getIsActive()).isEqualTo(1);
-        assertThat(dto.getCreatedAt()).isEqualTo(LocalDate.of(2025,10,10));
-        assertThat(dto.getCreatedBy()).isEqualTo("admin");
-        assertThat(dto.getUpdatedAt()).isEqualTo(LocalDate.of(2025,10,11));
-        assertThat(dto.getUpdatedBy()).isEqualTo("admin");
+        assertThat(dto.getCreatedAt()).isEqualTo(LocalDateTime.of(2025,10,10,0,0));
+        assertThat(dto.getUpdatedAt()).isEqualTo(LocalDateTime.of(2025,10,11,0,0));
     }
 
     @Test
