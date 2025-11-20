@@ -7,23 +7,28 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test: #เพิ่มมา
-      runs-on: ubuntu-latest
-      
-      steps:
-        - uses: actions/checkout@v4
-      
-        - name: Setup Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: 20
-  
-        - name: Install dependencies
-          run: npm ci
-  
-        - name: Run Unit Tests
-          run: npm test
+  test:
+    runs-on: ubuntu-latest
 
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      - name: Run Maven Tests
+        run: mvn -B test
   
   build:
     needs: test #นผ.เพิ่ม
