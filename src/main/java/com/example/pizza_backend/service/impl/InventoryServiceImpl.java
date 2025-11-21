@@ -51,8 +51,6 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public List<InventoryDto> getInventory(List<ProductDto> products, InventoryInput req) {
-        Integer totalStock = 0;
-        Integer totalSold = 0;
 
         // กำหนดค่า default สำหรับ start และ end
         LocalDateTime start = LocalDateTime.now();
@@ -74,13 +72,15 @@ public class InventoryServiceImpl implements InventoryService {
         for (ProductDto product : products) {
             Integer stock = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), 1, start, end);
             Integer sold = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), 2, start, end);
-            totalStock += (stock != null ? stock : 0);
-            totalSold += (sold != null ? sold : 0);
+
+            stock = (stock != null) ? stock : 0;
+            sold = (sold != null) ? sold : 0;
+            Integer temp = stock - sold;
 
             InventoryDto inventory = InventoryDto.builder()
                     .productName(product.getProductName())
                     .productId(product.getProductId())
-                    .stock(stock)
+                    .stock(temp)
                     .sold(sold)
                     .categoryName(product.getCategoryName())
                     .price(product.getProductPrice())
