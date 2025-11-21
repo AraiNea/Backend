@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderItemRepository orderItemRepository;
     private ProductRepository productRepository;
     private DiscountCodeRepository discountCodeRepository;
+    private InventoryRepository inventoryRepository;
     private Mapper mapper;
 
     @Autowired
@@ -34,7 +36,8 @@ public class OrderServiceImpl implements OrderService {
                             AddressRepository addressRepository,
                             OrderItemRepository orderItemRepository,
                             ProductRepository productRepository,
-                            DiscountCodeRepository discountCodeRepository) {
+                            DiscountCodeRepository discountCodeRepository,
+                            InventoryRepository inventoryRepository) {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
         this.profileRepository = profileRepository;
@@ -42,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
         this.orderItemRepository = orderItemRepository;
         this.productRepository = productRepository;
         this.discountCodeRepository = discountCodeRepository;
+        this.inventoryRepository = inventoryRepository;
     }
     public List<OrderDto> getOrdersByProfileId(Long profileId) {
         List<Orders> orders = orderRepository.getOrdersByProfileProfileId(profileId);
@@ -106,6 +110,13 @@ public class OrderServiceImpl implements OrderService {
 
             product.setProductStock(currentStock - qtyToDeduct);
             productRepository.save(product);
+
+            InventoryTransaction ivt = new InventoryTransaction();
+            ivt.setProduct(product);
+            ivt.setCreatedAt(LocalDateTime.now());
+            ivt.setTransactionType(2);
+            ivt.setQtyChange(qtyToDeduct);
+            inventoryRepository.save(ivt);
         }
         return "success";
     }
