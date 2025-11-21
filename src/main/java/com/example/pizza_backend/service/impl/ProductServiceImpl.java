@@ -7,11 +7,9 @@ import com.example.pizza_backend.api.dto.input.ProductInput;
 import com.example.pizza_backend.api.dto.search.ProductSearchReq;
 import com.example.pizza_backend.api.mapper.Mapper;
 import com.example.pizza_backend.exception.IdNotFoundException;
-import com.example.pizza_backend.persistence.entity.Cart;
-import com.example.pizza_backend.persistence.entity.Category;
-import com.example.pizza_backend.persistence.entity.Product;
-import com.example.pizza_backend.persistence.entity.ProductDocument;
+import com.example.pizza_backend.persistence.entity.*;
 import com.example.pizza_backend.persistence.repository.CategoryRepository;
+import com.example.pizza_backend.persistence.repository.InventoryRepository;
 import com.example.pizza_backend.persistence.repository.ProductElasticsearchRepository;
 import com.example.pizza_backend.persistence.repository.ProductRepository;
 import com.example.pizza_backend.service.ProductService;
@@ -23,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,16 +32,19 @@ public class ProductServiceImpl implements ProductService {
     private final Mapper mapper;
     private final CategoryRepository categoryRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
+    private final InventoryRepository inventoryRepository;
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository,
                               Mapper mapper,
                               CategoryRepository categoryRepository,
-                              ProductElasticsearchRepository productElasticsearchRepository) {
+                              ProductElasticsearchRepository productElasticsearchRepository,
+                              InventoryRepository inventoryRepository) {
         this.productRepository = productRepository;
         this.mapper = mapper;
         this.categoryRepository = categoryRepository;
         this.productElasticsearchRepository = productElasticsearchRepository;
+        this.inventoryRepository = inventoryRepository;
     }
 
     @Override
@@ -125,8 +127,23 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IdNotFoundException("Product Not found"));
 
-        mapper.updateProductFromInput(productInput, product, username);
+        if (productInput.getProductStock() != null) {
+            InventoryTransaction ivt = new InventoryTransaction();
+            ivt.setProduct(product);
+            ivt.setCreatedAt(LocalDateTime.now());
+            Integer qtyChange = 0;
+            if (productInput.getStockType() == 1){
+                qtyChange = productInput.getProductStock() - product.getProductStock();
+            }
+            if (productInput.getStockType() == 2){
+                qtyChange = product.getProductStock() - productInput.getProductStock();
+            }
+            ivt.setQtyChange(qtyChange);
+            ivt.setTransactionType(productInput.getStockType());
+            inventoryRepository.save(ivt);
+        }
 
+        mapper.updateProductFromInput(productInput, product, username);
         if (productInput.getCategoryId() != null){
             Category category = categoryRepository.findById(productInput.getCategoryId())
                     .orElseThrow(() -> new IdNotFoundException("Category Not found"));

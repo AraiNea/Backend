@@ -11,6 +11,7 @@ public class ProductInput {
     private String productDetail;
     private Integer productPrice;
     private Integer productStock;
+    private Integer stockType;
     private Integer isActive;
     private Long categoryId;
 }
