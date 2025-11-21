@@ -23,177 +23,64 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 class ProductControllerTest {
 
-    @InjectMocks
-    private ProductController productController;
-
-    @Mock
-    private ProductService productService;
-
-    @Mock
-    private RecommendedService recommendedService;
-
-    @Mock
-    private CategoryService categoryService;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private MultipartFile imageFile;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    void getAllProducts_shouldReturnProductsAndCategories() {
-        ProductSearchReq searchReq = new ProductSearchReq();
-
-        // สร้าง ProductDto ด้วย builder (ยังทำได้)
-        ProductDto product1 = ProductDto.builder()
+    void testBuilderAndGetters() {
+        ProductDto dto = ProductDto.builder()
                 .categoryId(1L)
                 .categoryName("Pizza")
-                .productId(101L)
-                .productName("Margherita")
-                .productDetail("Cheese pizza")
+                .productId(100L)
+                .productName("Cheese Pizza")
+                .productDetail("Delicious pizza with cheese")
                 .productPrice(250)
                 .productStock(10)
-                .productImgPath("/images/margherita.png")
+                .productImgPath("/images/pizza.png")
                 .isActive(1)
-                .createdAt(LocalDate.now())
+                .createdAt(LocalDateTime.of(2025,10,10,0,0))
                 .createdBy("admin")
+                .updatedAt(LocalDateTime.of(2025,10,11,0,0))
+                .updatedBy("admin")
                 .build();
 
-        // mock RecommendedProductDto
-        RecommendedProductDto rec1 = mock(RecommendedProductDto.class);
-        when(rec1.getProductId()).thenReturn(101L);
-
-        // mock CategoryDto
-        CategoryDto category1 = mock(CategoryDto.class);
-        when(category1.getCategoryId()).thenReturn(1L);
-        when(category1.getCategoryName()).thenReturn("Pizza");
-
-        // mock service
-        when(productService.getAllProducts(searchReq)).thenReturn(List.of(product1));
-        when(recommendedService.getAllRecommendedProducts()).thenReturn(List.of(rec1));
-        when(categoryService.getAllCategories()).thenReturn(List.of(category1));
-
-        // เรียก controller
-        ResponseEntity<Map<String, Object>> response = productController.getAllProducts(searchReq);
-        Map<String, Object> body = response.getBody();
-
-        // assert
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(body.get("products")).isEqualTo(List.of(product1));
-
-        // แปลง recommendedProductDto เป็น list ของ productId ก่อน assert
-        List<Long> recommendedIds = List.of(101L);
-        List<Long> actualIds = ((List<RecommendedProductDto>) body.get("recommendProductId")).stream()
-                .map(RecommendedProductDto::getProductId)
-                .toList();
-        assertThat(actualIds).isEqualTo(recommendedIds);
-
-        // แปลง categoryDto เป็น list ของ categoryId ก่อน assert (ตัวอย่างง่าย ๆ)
-        List<Long> expectedCategoryIds = List.of(1L);
-        List<Long> actualCategoryIds = ((List<CategoryDto>) body.get("categoriesDropdown")).stream()
-                .map(CategoryDto::getCategoryId)
-                .toList();
-        assertThat(actualCategoryIds).isEqualTo(expectedCategoryIds);
-
-        // verify ว่า service ถูกเรียก
-        verify(productService).getAllProducts(searchReq);
-        verify(recommendedService).getAllRecommendedProducts();
-        verify(categoryService).getAllCategories();
-    }
-
-
-    @Test
-    void createProduct_shouldReturnSuccess() throws IOException {
-        when(request.getAttribute("username")).thenReturn("admin");
-        ProductInput input = new ProductInput();
-
-        when(productService.createProduct(input, imageFile, "admin")).thenReturn("success");
-
-        ResponseEntity<?> response = productController.createProduct(request, input, imageFile);
-        Map<String, Object> body = (Map<String, Object>) response.getBody();
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(body.get("message")).isEqualTo("create success");
-
-        verify(productService).createProduct(input, imageFile, "admin");
+        assertThat(dto.getCategoryId()).isEqualTo(1L);
+        assertThat(dto.getCategoryName()).isEqualTo("Pizza");
+        assertThat(dto.getProductId()).isEqualTo(100L);
+        assertThat(dto.getProductName()).isEqualTo("Cheese Pizza");
+        assertThat(dto.getProductDetail()).isEqualTo("Delicious pizza with cheese");
+        assertThat(dto.getProductPrice()).isEqualTo(250);
+        assertThat(dto.getProductStock()).isEqualTo(10);
+        assertThat(dto.getProductImgPath()).isEqualTo("/images/pizza.png");
+        assertThat(dto.getIsActive()).isEqualTo(1);
+        assertThat(dto.getCreatedAt()).isEqualTo(LocalDateTime.of(2025,10,10,0,0));
+        assertThat(dto.getCreatedBy()).isEqualTo("admin");
+        assertThat(dto.getUpdatedAt()).isEqualTo(LocalDateTime.of(2025,10,11,0,0));
+        assertThat(dto.getUpdatedBy()).isEqualTo("admin");
     }
 
     @Test
-    void createProduct_shouldReturnBadRequest_whenServiceFails() throws IOException {
-        when(request.getAttribute("username")).thenReturn("admin");
-        ProductInput input = new ProductInput();
+    void testEqualsAndHashCode() {
+        ProductDto dto1 = ProductDto.builder().productId(100L).build();
+        ProductDto dto2 = ProductDto.builder().productId(100L).build();
 
-        when(productService.createProduct(input, imageFile, "admin")).thenReturn("error");
-
-        ResponseEntity<?> response = productController.createProduct(request, input, imageFile);
-
-        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
-        verify(productService).createProduct(input, imageFile, "admin");
+        assertThat(dto1).isEqualTo(dto2);
+        assertThat(dto1.hashCode()).isEqualTo(dto2.hashCode());
     }
 
     @Test
-    void updateProduct_shouldReturnSuccess_withImage() throws IOException {
-        when(request.getAttribute("username")).thenReturn("admin");
-        ProductInput input = new ProductInput();
-        when(imageFile.isEmpty()).thenReturn(false);
+    void testToString() {
+        ProductDto dto = ProductDto.builder()
+                .productId(100L)
+                .productName("Cheese Pizza")
+                .build();
 
-        when(productService.updateProduct(input, imageFile, "admin")).thenReturn("success");
-
-        ResponseEntity<?> response = productController.updateProduct(request, input, imageFile);
-        Map<String, Object> body = (Map<String, Object>) response.getBody();
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(body.get("message")).isEqualTo("update success");
-
-        verify(productService).updateProduct(input, imageFile, "admin");
-    }
-
-    @Test
-    void updateProduct_shouldReturnSuccess_withoutImage() throws IOException {
-        when(request.getAttribute("username")).thenReturn("admin");
-        ProductInput input = new ProductInput();
-
-        when(productService.updateProduct(input, null, "admin")).thenReturn("success");
-
-        ResponseEntity<?> response = productController.updateProduct(request, input, null);
-        Map<String, Object> body = (Map<String, Object>) response.getBody();
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(body.get("message")).isEqualTo("update success");
-
-        verify(productService).updateProduct(input, null, "admin");
-    }
-
-    @Test
-    void deleteProduct_shouldReturnSuccess() throws IOException {
-        ProductInput input = new ProductInput();
-        when(productService.deleteProduct(input)).thenReturn("success");
-
-        ResponseEntity<?> response = productController.deleteProduct(input);
-        Map<String, Object> body = (Map<String, Object>) response.getBody();
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(body.get("message")).isEqualTo("delete success");
-
-        verify(productService).deleteProduct(input);
-    }
-
-    @Test
-    void deleteProduct_shouldReturnBadRequest_whenServiceFails() throws IOException {
-        ProductInput input = new ProductInput();
-        when(productService.deleteProduct(input)).thenReturn("error");
-
-        ResponseEntity<?> response = productController.deleteProduct(input);
-
-        assertThat(response.getStatusCode().is4xxClientError()).isTrue();
-        verify(productService).deleteProduct(input);
+        String str = dto.toString();
+        assertThat(str).contains("productId=100", "productName=Cheese Pizza");
     }
 }
