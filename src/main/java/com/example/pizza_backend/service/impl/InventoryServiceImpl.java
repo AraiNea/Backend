@@ -40,11 +40,25 @@ public class InventoryServiceImpl implements InventoryService {
             end = LocalDateTime.of(req.getEndTime(), LocalTime.MAX);
         }
 
+        if (type == 1) {
+            for (ProductDto product : products) {
+                Integer stock = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), 1, start, end);
+                Integer out = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), 3, start, end);
 
-        // วนลูปผ่านแต่ละ product ที่เสิร์ชเจอ
-        for (ProductDto product : products) {
-            Integer stock = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), type, start, end);
-            totalInventory += (stock != null ? stock : 0);
+                stock = (stock != null) ? stock : 0;
+                out = (out != null) ? out : 0;
+                Integer temp = stock - out;
+                totalInventory += (temp != null ? temp : 0);
+            }
+        }
+
+        if (type == 2) {
+            for (ProductDto product : products) {
+                Integer sold = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), 2, start, end);
+
+                sold = (sold != null) ? sold : 0;
+                totalInventory += (sold != null ? sold : 0);
+            }
         }
         return totalInventory;
     }
@@ -72,10 +86,12 @@ public class InventoryServiceImpl implements InventoryService {
         for (ProductDto product : products) {
             Integer stock = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), 1, start, end);
             Integer sold = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), 2, start, end);
+            Integer out = inventoryRepository.sumQtyChangeByProductIdAndType(product.getProductId(), 3, start, end);
 
             stock = (stock != null) ? stock : 0;
             sold = (sold != null) ? sold : 0;
-            Integer temp = stock - sold;
+            out = (out != null) ? out : 0;
+            Integer temp = stock - sold - out;
 
             InventoryDto inventory = InventoryDto.builder()
                     .productName(product.getProductName())

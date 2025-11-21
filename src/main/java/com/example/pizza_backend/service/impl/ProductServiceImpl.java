@@ -135,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
             if (productInput.getStockType() == 1){
                 qtyChange = productInput.getProductStock() - product.getProductStock();
             }
-            if (productInput.getStockType() == 2){
+            if (productInput.getStockType() == 3){
                 qtyChange = product.getProductStock() - productInput.getProductStock();
             }
             ivt.setQtyChange(qtyChange);

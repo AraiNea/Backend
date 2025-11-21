@@ -51,8 +51,8 @@ public class InventoryController {
             return ResponseEntity.ok(response);
         }
 
-        Integer totalRemaining = inventoryService.getTotalInventory(products, 1, req);
-        Integer totalOut = inventoryService.getTotalInventory(products, 2, req);
+        Integer totalRemaining = inventoryService.getTotalInventory(products, 1, req); //เติม-ออก
+        Integer totalOut = inventoryService.getTotalInventory(products, 2, req); //ขาย
 
         List<InventoryDto> inventory = inventoryService.getInventory(products, req);
 
